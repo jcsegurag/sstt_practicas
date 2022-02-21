@@ -143,7 +143,12 @@ def main():
             sock.bind((args.host, args.port))
             sock.listen(64)
             while(True):
-                socket_cliente, addr_cliente = sock.accept()
+
+                try:
+                    socket_cliente, addr_cliente = sock.accept()
+                except socket.error:
+                    print('Hapetao')
+                    cerrar_conexion(sock)
                 hijo = os.fork()
                 if(hijo == 0):
                     cerrar_conexion(sock)
