@@ -145,11 +145,14 @@ def main():
         sock.listen(64)
         while(True):
 
+            '''
             try:
                 socket_cliente, addr_cliente = sock.accept()
             except socket.error:
                 print('Hapetao')
                 cerrar_conexion(socket_cliente)
+            '''
+            socket_cliente, addr_cliente = sock.accept()
             
             hijo = os.fork()
             if(hijo == 0):
