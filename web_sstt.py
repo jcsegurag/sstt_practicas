@@ -98,6 +98,7 @@ def process_web_request(cs, webroot):
     """
     data = recibir_mensaje(cs)
     enviar_mensaje(cs, data)
+    cerrar_conexion(cs)
 
 def main():
     """ Función principal del servidor
@@ -148,7 +149,8 @@ def main():
                     socket_cliente, addr_cliente = sock.accept()
                 except socket.error:
                     print('Hapetao')
-                    cerrar_conexion(sock)
+                    cerrar_conexion(socket_cliente)
+                
                 hijo = os.fork()
                 if(hijo == 0):
                     cerrar_conexion(sock)
