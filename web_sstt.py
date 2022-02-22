@@ -152,7 +152,7 @@ def main():
                 print('Hapetao')
                 cerrar_conexion(socket_cliente)
             '''
-            socket_cliente, addr_cliente = sock.accept()
+            (socket_cliente, addr_cliente) = sock.accept()
             
             hijo = os.fork()
             if(hijo == 0):
