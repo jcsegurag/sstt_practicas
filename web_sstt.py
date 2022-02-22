@@ -142,7 +142,7 @@ def main():
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind((args.host, args.port))
-        sock.listen(64)
+        sock.listen()
         while(True):
 
             '''
@@ -152,7 +152,7 @@ def main():
                 print('Hapetao')
                 cerrar_conexion(socket_cliente)
             '''
-            (socket_cliente, addr_cliente) = sock.accept()
+            socket_cliente, addr_cliente = sock.accept()
             
             hijo = os.fork()
             if(hijo == 0):
