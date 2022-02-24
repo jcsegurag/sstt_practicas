@@ -35,7 +35,6 @@ def enviar_mensaje(cs, data):
         Devuelve el número de bytes enviados.
     """
     return cs.send(data.encode())
-    pass
 
 
 def recibir_mensaje(cs,data):
@@ -43,14 +42,12 @@ def recibir_mensaje(cs,data):
         Leemos la información que nos llega. recv() devuelve un string con los datos.
     """
     return cs.recv(BUFSIZE).decode()
-    pass
 
 
 def cerrar_conexion(cs):
     """ Esta función cierra una conexión activa.
     """
     cs.close()
-    pass
 
 
 def process_cookies(headers,  cs):
