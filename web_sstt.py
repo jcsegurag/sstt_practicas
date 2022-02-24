@@ -34,20 +34,20 @@ def enviar_mensaje(cs, data):
     """ Esta función envía datos (data) a través del socket cs
         Devuelve el número de bytes enviados.
     """
-    return cs.send(data.encode())
+    pass
 
 
-def recibir_mensaje(cs):
+def recibir_mensaje(cs,data):
     """ Esta función recibe datos a través del socket cs
         Leemos la información que nos llega. recv() devuelve un string con los datos.
     """
-    return cs.recv(BUFSIZE).decode()
-    
+    pass
+
 
 def cerrar_conexion(cs):
     """ Esta función cierra una conexión activa.
     """
-    cs.close()
+    pass
 
 
 def process_cookies(headers,  cs):
@@ -96,9 +96,7 @@ def process_web_request(cs, webroot):
             * Si es por timeout, se cierra el socket tras el período de persistencia.
                 * NOTA: Si hay algún error, enviar una respuesta de error con una pequeña página HTML que informe del error.
     """
-    data = recibir_mensaje(cs)
-    enviar_mensaje(cs, data)
-    cerrar_conexion(cs)
+
 
 def main():
     """ Función principal del servidor
@@ -144,25 +142,16 @@ def main():
         sock.bind((args.host, args.port))
         sock.listen()
         while(True):
-
-            '''
-            try:
-                socket_cliente, addr_cliente = sock.accept()
-            except socket.error:
-                print('Hapetao')
-                cerrar_conexion(socket_cliente)
-            '''
             socket_cliente, addr_cliente = sock.accept()
-            
             hijo = os.fork()
             if(hijo == 0):
                 cerrar_conexion(sock)
-                process_web_request(socket_cliente, args.webroot)
+                process_web_request(socket_cliente, addr_cliente)
             else:
                 cerrar_conexion(socket_cliente)
 
     except KeyboardInterrupt:
         True
-#asi se queda
+
 if __name__== "__main__":
     main()
