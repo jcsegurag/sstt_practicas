@@ -101,6 +101,23 @@ def process_web_request(cs, webroot):
         data  = recibir_mensaje(cs)
         print(data)
 
+        lineas = data.split(sep = "\r\n", maxsplit = -1)
+        lineas_solicitud = lineas[0].split(sep = ' ', maxsplit = -1)
+        if(lineas_solicitud[2] != "HTTP/1.1"):
+            #No es 1.1
+            pass
+
+        if(lineas_solicitud[0] != "GET"):
+            #Mando Error 405 "Method Not Allowed"
+            pass
+        recurso = " "
+        if(lineas_solicitud[1] == "/"):
+            recurso = "/index.html"
+        else:
+            recurso = lineas_solicitud[1]
+        
+        enviar_mensaje()
+
         cerrar_conexion(cs)
 
     sys.exit
@@ -164,7 +181,6 @@ def main():
                     cerrar_conexion(socket_cliente)
             except socket.error:
                 break
-            #kekos
     except KeyboardInterrupt:
         True
 
