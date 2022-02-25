@@ -96,9 +96,10 @@ def process_web_request(cs, webroot):
             * Si es por timeout, se cierra el socket tras el período de persistencia.
                 * NOTA: Si hay algún error, enviar una respuesta de error con una pequeña página HTML que informe del error.
     """
-    data = recibir_mensaje(cs)
-    enviar_mensaje(cs, data)
-    cerrar_conexion(cs)
+    while(True):
+        data = recibir_mensaje(cs)
+        enviar_mensaje(cs, data)
+        cerrar_conexion(cs)
 
 
 def main():
