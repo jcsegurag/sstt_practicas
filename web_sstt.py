@@ -99,7 +99,7 @@ def process_web_request(cs, webroot):
     while(True):
         data = recibir_mensaje(cs)
         enviar_mensaje(cs, data)
-        cerrar_conexion(cs)
+        #cerrar_conexion(cs)
 
 
 def main():
