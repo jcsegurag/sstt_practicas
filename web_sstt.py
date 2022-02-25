@@ -140,21 +140,21 @@ def main():
 
             - Si es el proceso padre cerrar el socket que gestiona el hijo.
         """
-
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind((args.host, args.port))
         sock.listen()
         while(True):
-            socket_cliente, addr_cliente = sock.accept()
-            hijo = os.fork()
-            if(hijo == 0):
-                cerrar_conexion(sock)
-                process_web_request(socket_cliente, addr_cliente)
-            else:
-                cerrar_conexion(socket_cliente)
-                #elkeko
-
+            try:
+                socket_cliente, addr_cliente = sock.accept()
+                hijo = os.fork()
+                if(hijo == 0):
+                    cerrar_conexion(sock)
+                    process_web_request(socket_cliente, addr_cliente)
+                else:
+                    cerrar_conexion(socket_cliente)
+            except socket.error:
+                break
     except KeyboardInterrupt:
         True
 
