@@ -155,6 +155,7 @@ def main():
                     cerrar_conexion(socket_cliente)
             except socket.error:
                 break
+            #kekos
     except KeyboardInterrupt:
         True
 
