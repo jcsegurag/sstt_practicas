@@ -152,6 +152,7 @@ def main():
                 process_web_request(socket_cliente, addr_cliente)
             else:
                 cerrar_conexion(socket_cliente)
+                #elkeko
 
     except KeyboardInterrupt:
         True
