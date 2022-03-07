@@ -12,6 +12,7 @@ import time         # Timeout conexión
 import sys          # sys.exit
 import re           # Analizador sintáctico
 import logging      # Para imprimir logs
+import datetime     # Para la fecha
 
 
 
@@ -49,6 +50,11 @@ def cerrar_conexion(cs):
     """
     cs.close()
 
+def enviar_recurso(ruta ,cs):
+
+    fichero = open(ruta, "r")
+    datos = fichero.read()
+    enviar_mensaje(cs, datos)
 
 def process_cookies(headers,  cs):
     """ Esta función procesa la cookie cookie_counter
@@ -62,40 +68,40 @@ def process_cookies(headers,  cs):
 
 
 def process_web_request(cs, webroot):
-    """ Procesamiento principal de los mensajes recibidos.
-        Típicamente se seguirá un procedimiento similar al siguiente (aunque el alumno puede modificarlo si lo desea)
+        #Procesamiento principal de los mensajes recibidos.
+        #Típicamente se seguirá un procedimiento similar al siguiente (aunque el alumno puede modificarlo si lo desea)
 
-        * Bucle para esperar hasta que lleguen datos en la red a través del socket cs con select()
+        # Bucle para esperar hasta que lleguen datos en la red a través del socket cs con select()
 
-            * Se comprueba si hay que cerrar la conexión por exceder TIMEOUT_CONNECTION segundos
-              sin recibir ningún mensaje o hay datos. Se utiliza select.select
+            # Se comprueba si hay que cerrar la conexión por exceder TIMEOUT_CONNECTION segundos
+            #  sin recibir ningún mensaje o hay datos. Se utiliza select.select
 
-            * Si no es por timeout y hay datos en el socket cs.
-                * Leer los datos con recv.
-                * Analizar que la línea de solicitud y comprobar está bien formateada según HTTP 1.1
-                    * Devuelve una lista con los atributos de las cabeceras.
-                    * Comprobar si la versión de HTTP es 1.1
-                    * Comprobar si es un método GET. Si no devolver un error Error 405 "Method Not Allowed".
-                    * Leer URL y eliminar parámetros si los hubiera
-                    * Comprobar si el recurso solicitado es /, En ese caso el recurso es index.html
-                    * Construir la ruta absoluta del recurso (webroot + recurso solicitado)
-                    * Comprobar que el recurso (fichero) existe, si no devolver Error 404 "Not found"
-                    * Analizar las cabeceras. Imprimir cada cabecera y su valor. Si la cabecera es Cookie comprobar
-                      el valor de cookie_counter para ver si ha llegado a MAX_ACCESOS.
-                      Si se ha llegado a MAX_ACCESOS devolver un Error "403 Forbidden"
-                    * Obtener el tamaño del recurso en bytes.
-                    * Extraer extensión para obtener el tipo de archivo. Necesario para la cabecera Content-Type
-                    * Preparar respuesta con código 200. Construir una respuesta que incluya: la línea de respuesta y
-                      las cabeceras Date, Server, Connection, Set-Cookie (para la cookie cookie_counter),
-                      Content-Length y Content-Type.
-                    * Leer y enviar el contenido del fichero a retornar en el cuerpo de la respuesta.
-                    * Se abre el fichero en modo lectura y modo binario
-                        * Se lee el fichero en bloques de BUFSIZE bytes (8KB)
-                        * Cuando ya no hay más información para leer, se corta el bucle
+            # Si no es por timeout y hay datos en el socket cs.
+                # Leer los datos con recv.
+                # Analizar que la línea de solicitud y comprobar está bien formateada según HTTP 1.1
+                    # Devuelve una lista con los atributos de las cabeceras.
+                    # Comprobar si la versión de HTTP es 1.1
+                    # Comprobar si es un método GET. Si no devolver un error Error 405 "Method Not Allowed".
+                    # Leer URL y eliminar parámetros si los hubiera
+                    # Comprobar si el recurso solicitado es /, En ese caso el recurso es index.html
+                    # Construir la ruta absoluta del recurso (webroot + recurso solicitado)
+                    # Comprobar que el recurso (fichero) existe, si no devolver Error 404 "Not found"
+                    # Analizar las cabeceras. Imprimir cada cabecera y su valor. Si la cabecera es Cookie comprobar
+                      #el valor de cookie_counter para ver si ha llegado a MAX_ACCESOS.
+                      #Si se ha llegado a MAX_ACCESOS devolver un Error "403 Forbidden"
+                    # Obtener el tamaño del recurso en bytes.
+                    # Extraer extensión para obtener el tipo de archivo. Necesario para la cabecera Content-Type
+                    # Preparar respuesta con código 200. Construir una respuesta que incluya: la línea de respuesta y
+                      #las cabeceras Date, Server, Connection, Set-Cookie (para la cookie cookie_counter),
+                      #Content-Length y Content-Type.
+                    # Leer y enviar el contenido del fichero a retornar en el cuerpo de la respuesta.
+                    # Se abre el fichero en modo lectura y modo binario
+                        # Se lee el fichero en bloques de BUFSIZE bytes (8KB)
+                        # Cuando ya no hay más información para leer, se corta el bucle
 
-            * Si es por timeout, se cierra el socket tras el período de persistencia.
-                * NOTA: Si hay algún error, enviar una respuesta de error con una pequeña página HTML que informe del error.
-    """
+            # Si es por timeout, se cierra el socket tras el período de persistencia.
+                # NOTA: Si hay algún error, enviar una respuesta de error con una pequeña página HTML que informe del error.
+    
 
     while(True):
         data  = recibir_mensaje(cs)
@@ -103,6 +109,18 @@ def process_web_request(cs, webroot):
 
         lineas = data.split(sep = "\r\n", maxsplit = -1)
         lineas_solicitud = lineas[0].split(sep = ' ', maxsplit = -1)
+
+        datos_cabecera = "HTTP/1.1 200 OK\r\n" + datetime.today().strftime('%A, %B, %d, %Y %H:%M:%S') +" GMT\r\n" + "Server: iotforyou03.org\r\n"
+        content_length = "Content-Length: " + os.stat(lineas_solicitud[1]).st_size + "\r\n"
+        datos_cabecera = datos_cabecera + content_length
+        datos_cabecera = datos_cabecera + "Keep-Alive: timeout=" + TIMEOUT_CONNECTION + ", max=" + TIMEOUT_CONNECTION + "\r\n"
+        datos_cabecera = datos_cabecera + "Connection: Keep-Alive\r\n"
+
+        #TODO
+        (_,_, terminacion) = (os.path.basename(lineas_solicitud[1])).par
+
+        datos_cabecera = datos_cabecera + "Content-Type: " + terminacion + "\r\n"
+
         if(lineas_solicitud[2] != "HTTP/1.1"):
             #No es 1.1
             pass
