@@ -98,7 +98,7 @@ def process_web_request(cs, webroot):
                     
         # Comprobar si la versión de HTTP es 1.1
         if(lineas_solicitud[2] != "HTTP/1.1"):
-            #No es 1.1
+            print("La versidon HTTP no es la 1.1")
             pass
                     
         # Comprobar si es un método GET. Si no devolver un error Error 405 "Method Not Allowed".
@@ -115,7 +115,10 @@ def process_web_request(cs, webroot):
             recurso = lineas_solicitud[1]
 
         # Construir la ruta absoluta del recurso (webroot + recurso solicitado)
+        ruta = webroot + recurso
         # Comprobar que el recurso (fichero) existe, si no devolver Error 404 "Not found"
+        if not (os.path.isfile(lineas_solicitud[1])):
+            enviar_recurso("404.html")
         # Analizar las cabeceras. Imprimir cada cabecera y su valor. Si la cabecera es Cookie comprobar
           #el valor de cookie_counter para ver si ha llegado a MAX_ACCESOS.
           #Si se ha llegado a MAX_ACCESOS devolver un Error "403 Forbidden"
