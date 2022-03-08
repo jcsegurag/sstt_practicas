@@ -99,7 +99,6 @@ def process_web_request(cs, webroot):
         # Comprobar si la versión de HTTP es 1.1
         if(lineas_solicitud[2] != "HTTP/1.1"):
             print("La versidon HTTP no es la 1.1")
-            pass
                     
         # Comprobar si es un método GET. Si no devolver un error Error 405 "Method Not Allowed".
         if(lineas_solicitud[0] != "GET"):
@@ -138,9 +137,9 @@ def process_web_request(cs, webroot):
         #TODO Cookie counter
         terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
         content = " "
-        for clave in diccionario:
+        for clave in filetypes:
             if(clave == terminacion):
-                content = diccionario[clave]
+                content = filetypes[clave]
         datos_cabecera = datos_cabecera + "Content-Type: " + content + "\r\n"  
         # Leer y enviar el contenido del fichero a retornar en el cuerpo de la respuesta.
         # Se abre el fichero en modo lectura y modo binario
@@ -158,41 +157,54 @@ def process_web_request(cs, webroot):
 
     
 
-    """while(True):
+    """
+    while(True):
         data  = recibir_mensaje(cs)
         print(data)
 
         lineas = data.split(sep = "\r\n", maxsplit = -1)
         lineas_solicitud = lineas[0].split(sep = ' ', maxsplit = -1)
 
-        datos_cabecera = "HTTP/1.1 200 OK\r\n" + datetime.today().strftime('%A, %B, %d, %Y %H:%M:%S') +" GMT\r\n" + "Server: iotforyou03.org\r\n"
-        content_length = "Content-Length: " + os.stat(lineas_solicitud[1]).st_size + "\r\n"
-        datos_cabecera = datos_cabecera + content_length
-        datos_cabecera = datos_cabecera + "Keep-Alive: timeout=" + TIMEOUT_CONNECTION + ", max=" + TIMEOUT_CONNECTION + "\r\n"
-        datos_cabecera = datos_cabecera + "Connection: Keep-Alive\r\n"
-
-        #TODO
-        (_,_, terminacion) = (os.path.basename(lineas_solicitud[1])).par
-
-        datos_cabecera = datos_cabecera + "Content-Type: " + terminacion + "\r\n"
+        for linea in lineas:
+            comp = re.compile(atributos).fullmatch(lineas)
+            if comp:
+                diccionario = {comp.group('clave'): comp.group('valor')}
 
         if(lineas_solicitud[2] != "HTTP/1.1"):
-            #No es 1.1
-            pass
-
+            print("La versidon HTTP no es la 1.1")
+        
         if(lineas_solicitud[0] != "GET"):
-            #Mando Error 405 "Method Not Allowed"
-            pass
+           enviar_recurso("405.html")
+        
         recurso = " "
         if(lineas_solicitud[1] == "/"):
             recurso = "/index.html"
         else:
             recurso = lineas_solicitud[1]
         
+        ruta = webroot + recurso
+
+        if not (os.path.isfile(lineas_solicitud[1])):
+            enviar_recurso("404.html")
+        
+        datos_cabecera = "HTTP/1.1 200 OK\r\n" + datetime.today().strftime('%A, %B, %d, %Y %H:%M:%S') +" GMT\r\n" + "Server: iotforyou03.org\r\n"
+        content_length = "Content-Length: " + os.stat(lineas_solicitud[1]).st_size + "\r\n"
+        datos_cabecera = datos_cabecera + content_length
+        datos_cabecera = datos_cabecera + "Keep-Alive: timeout=" + TIMEOUT_CONNECTION + ", max=" + TIMEOUT_CONNECTION + "\r\n"
+        datos_cabecera = datos_cabecera + "Connection: Keep-Alive\r\n"
+
+        terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
+        content = " "
+        for clave in filetypes:
+            if(clave == terminacion):
+                content = filetypes[clave]
+        
+        datos_cabecera = datos_cabecera + "Content-Type: " + content + "\r\n"  
+
         enviar_mensaje()
 
         cerrar_conexion(cs)
-
+    
     sys.exit
 
     while(True):
