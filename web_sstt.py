@@ -112,6 +112,7 @@ def process_web_request(cs, webroot):
                     
         # Comprobar si es un método GET. Si no devolver un error Error 405 "Method Not Allowed".
         if(lineas_solicitud[0] != "GET"):
+            print("se mete en if de que no es un get")
             ruta = "405.html"
             header = "HTTP/1.1 405 Method Not Allowed\r\n" + str(datetime.now()) + "\r\n" + "Server: iotforyou03.org\r\n" + "Content-Length: " + os.stat("405.html").st_size + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n" 
             tam5 = os.stat("405.html").st_size
