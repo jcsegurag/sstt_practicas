@@ -123,7 +123,7 @@ def process_web_request(cs, webroot):
             recurso = "/index.html"
         else:
             recurso = lineas_solicitud[1]
-        header = "HTTP/1.1 200 OK\r\n" + str(datetime.now()) + "\r\n" + "Server: iotforyou03.org\r\n" + "Content-Length: " + os.stat("index.html").st_size + "\r\n" + "Keep-Alive: timeout=" + TIMEOUT_CONNECTION + ", max=" + TIMEOUT_CONNECTION + "\r\n" + "Connection: Keep Alive\r\n" + "Content-Type: text/html\r\n" 
+        header = "HTTP/1.1 200 OK\r\n" + str(datetime.now()) + "\r\n" + "Server: iotforyou03.org\r\n" + "Content-Length: " + os.stat("index.html").st_size + "\r\n" + "Keep-Alive: timeout=" + str(TIMEOUT_CONNECTION) + ", max=" + str(TIMEOUT_CONNECTION) + "\r\n" + "Connection: Keep Alive\r\n" + "Content-Type: text/html\r\n" 
         tam = os.stat("index.html").st_size
         enviar_recurso(recurso, header, tam, cs)
 
@@ -133,7 +133,7 @@ def process_web_request(cs, webroot):
         # Comprobar que el recurso (fichero) existe, si no devolver Error 404 "Not found"
         if not (os.path.isfile(lineas_solicitud[1])):
             ruta = "404.html"
-            header = "HTTP/1.1 404 Method Not Allowed\r\n" + str(datetime.now()) + "\r\n" + "Server: iotforyou03.org\r\n" + "Content-Length: " + os.stat("404.html").st_size + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n" 
+            header = "HTTP/1.1 404 Method Not Allowed\r\n" + str(datetime.now()) + "\r\n" + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("404.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n" 
             tam = os.stat("404.html").st_size
             enviar_recurso("404.html", os.stat("404.html").st_size, cs)
         # Analizar las cabeceras. Imprimir cada cabecera y su valor. Si la cabecera es Cookie comprobar
@@ -150,7 +150,7 @@ def process_web_request(cs, webroot):
         # Preparar respuesta con código 200. Construir una respuesta que incluya: la línea de respuesta y
           #las cabeceras Date, Server, Connection, Set-Cookie (para la cookie cookie_counter),
           #Content-Length y Content-Type.
-        datos_cabecera = datos_cabecera + "Keep-Alive: timeout=" + TIMEOUT_CONNECTION + ", max=" + TIMEOUT_CONNECTION + "\r\n"
+        datos_cabecera = datos_cabecera + "Keep-Alive: timeout=" + str(TIMEOUT_CONNECTION) + ", max=" + str(TIMEOUT_CONNECTION) + "\r\n"
         datos_cabecera = datos_cabecera + "Connection: Keep-Alive\r\n"
 
         #TODO Cookie counter
