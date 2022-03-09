@@ -100,10 +100,10 @@ def process_web_request(cs, webroot):
         lineas_solicitud = lineas[0].split(sep = ' ', maxsplit = -1)
         
         # Devuelve una lista con los atributos de las cabeceras.
-        for linea in lineas:
+        """for linea in lineas:
             comp = re.compile(atributos).fullmatch(lineas)
             if comp:
-                diccionario = {comp.group('clave'): comp.group('valor')}
+                diccionario = {comp.group('clave'): comp.group('valor')}"""
                     
         # Comprobar si la versión de HTTP es 1.1
         if(lineas_solicitud[2] != "HTTP/1.1"):
