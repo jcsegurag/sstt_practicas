@@ -54,11 +54,20 @@ def cerrar_conexion(cs):
     """
     cs.close()
 
-def enviar_recurso(ruta ,cs):
+def enviar_recurso(ruta,header, tam ,cs):
     #TODO
-    fichero = open(ruta, "r")
-    datos = fichero.read()
-    enviar_mensaje(cs, datos)
+    if(len(header) + tam <= BUFSIZE):
+        fichero = open(ruta, "r")
+        datos = fichero.read()
+        enviar_mensaje(cs, datos)
+    else:
+        fichero = open(ruta, "r")
+        while(1):
+            datos = fichero.read(BUFSIZE)
+            if(not datos):
+                break
+            enviar_mensaje(cs, datos)
+
 
 def process_cookies(headers,  cs):
     """ Esta función procesa la cookie cookie_counter
@@ -114,9 +123,10 @@ def process_web_request(cs, webroot):
 
         # Construir la ruta absoluta del recurso (webroot + recurso solicitado)
         ruta = webroot + recurso
+        print(ruta)
         # Comprobar que el recurso (fichero) existe, si no devolver Error 404 "Not found"
         if not (os.path.isfile(lineas_solicitud[1])):
-            enviar_recurso("404.html")
+            enviar_recurso("404.html", os.stat(lineas_solicitud[1]).st_size, cs)
         # Analizar las cabeceras. Imprimir cada cabecera y su valor. Si la cabecera es Cookie comprobar
           #el valor de cookie_counter para ver si ha llegado a MAX_ACCESOS.
           #Si se ha llegado a MAX_ACCESOS devolver un Error "403 Forbidden"
