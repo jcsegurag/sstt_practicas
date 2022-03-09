@@ -112,8 +112,8 @@ def process_web_request(cs, webroot):
         if(lineas_solicitud[0] != "GET"):
             ruta = "405.html"
             header = "HTTP/1.1 405 Method Not Allowed\r\n" + str(datetime.now()) + "\r\n" + "Server: iotforyou03.org\r\n" + "Content-Length: " + os.stat("405.html").st_size + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n" 
-            tam = os.stat("405.html").st_size
-            enviar_recurso(ruta, header, tam, cs)
+            tam5 = os.stat("405.html").st_size
+            enviar_recurso(ruta, header, tam5, cs)
             cerrar_conexion(cs)
         # Leer URL y eliminar parámetros si los hubiera
         #TODO
@@ -124,8 +124,8 @@ def process_web_request(cs, webroot):
         else:
             recurso = lineas_solicitud[1]
         header = "HTTP/1.1 200 OK\r\n" + str(datetime.now()) + "\r\n" + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("index.html").st_size) + "\r\n" + "Keep-Alive: timeout=" + str(TIMEOUT_CONNECTION) + ", max=" + str(TIMEOUT_CONNECTION) + "\r\n" + "Connection: Keep Alive\r\n" + "Content-Type: text/html\r\n" 
-        tam = os.stat("index.html").st_size
-        enviar_recurso(recurso, header, tam, cs)
+        tami = os.stat("index.html").st_size
+        enviar_recurso(recurso, header, tami, cs)
 
         # Construir la ruta absoluta del recurso (webroot + recurso solicitado)
         ruta = webroot + recurso
@@ -134,8 +134,8 @@ def process_web_request(cs, webroot):
         if not (os.path.isfile(lineas_solicitud[1])):
             ruta = "404.html"
             header = "HTTP/1.1 404 Method Not Allowed\r\n" + str(datetime.now()) + "\r\n" + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("404.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n" 
-            tam = os.stat("404.html").st_size
-            enviar_recurso("404.html", os.stat("404.html").st_size, cs)
+            tam4 = os.stat("404.html").st_size
+            enviar_recurso("404.html", tam4, cs)
         # Analizar las cabeceras. Imprimir cada cabecera y su valor. Si la cabecera es Cookie comprobar
           #el valor de cookie_counter para ver si ha llegado a MAX_ACCESOS.
           #Si se ha llegado a MAX_ACCESOS devolver un Error "403 Forbidden"
@@ -167,71 +167,11 @@ def process_web_request(cs, webroot):
 
             # Si es por timeout, se cierra el socket tras el período de persistencia.
                 # NOTA: Si hay algún error, enviar una respuesta de error con una pequeña página HTML que informe del error.
-        
-        enviar_mensaje()
+        tam = os.stat(lineas_solicitud[1]).st_size
+        enviar_recurso(ruta, datos_cabecera, tam, cs)
 
         cerrar_conexion(cs)
-    
-    sys.exit
-
-    
-
-    """
-    while(True):
-        data  = recibir_mensaje(cs)
-        print(data)
-
-        lineas = data.split(sep = "\r\n", maxsplit = -1)
-        lineas_solicitud = lineas[0].split(sep = ' ', maxsplit = -1)
-
-        for linea in lineas:
-            comp = re.compile(atributos).fullmatch(lineas)
-            if comp:
-                diccionario = {comp.group('clave'): comp.group('valor')}
-
-        if(lineas_solicitud[2] != "HTTP/1.1"):
-            print("La versidon HTTP no es la 1.1")
-        
-        if(lineas_solicitud[0] != "GET"):
-           enviar_recurso("405.html")
-        
-        recurso = " "
-        if(lineas_solicitud[1] == "/"):
-            recurso = "/index.html"
-        else:
-            recurso = lineas_solicitud[1]
-        
-        ruta = webroot + recurso
-
-        if not (os.path.isfile(lineas_solicitud[1])):
-            enviar_recurso("404.html")
-        
-        datos_cabecera = "HTTP/1.1 200 OK\r\n" + datetime.today().strftime('%A, %B, %d, %Y %H:%M:%S') +" GMT\r\n" + "Server: iotforyou03.org\r\n"
-        content_length = "Content-Length: " + os.stat(lineas_solicitud[1]).st_size + "\r\n"
-        datos_cabecera = datos_cabecera + content_length
-        datos_cabecera = datos_cabecera + "Keep-Alive: timeout=" + TIMEOUT_CONNECTION + ", max=" + TIMEOUT_CONNECTION + "\r\n"
-        datos_cabecera = datos_cabecera + "Connection: Keep-Alive\r\n"
-
-        terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
-        content = " "
-        for clave in filetypes:
-            if(clave == terminacion):
-                content = filetypes[clave]
-        
-        datos_cabecera = datos_cabecera + "Content-Type: " + content + "\r\n"  
-
-        enviar_mensaje()
-
-        cerrar_conexion(cs)
-    
-    sys.exit
-
-    while(True):
-        data = recibir_mensaje(cs)
-        enviar_mensaje(cs, data)
-        #cerrar_conexion(cs)
-    """
-
+        sys.exit
 
 def main():
     """ Función principal del servidor
