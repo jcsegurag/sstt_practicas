@@ -59,6 +59,7 @@ def enviar_recurso(ruta, header, tam ,cs):
         fichero = open(ruta, "r")
         datos = fichero.read()
         enviar_mensaje(cs, datos)
+        print("entro a enviar recurso y es mas pequeño que bufsize")
     else:
         fichero = open(ruta, "r")
         while(1):
@@ -66,6 +67,7 @@ def enviar_recurso(ruta, header, tam ,cs):
             if(not datos):
                 break
             enviar_mensaje(cs, datos)
+            print("entro a enviar recurso y es mas grande que bufsize")
 
 
 def process_cookies(headers,  cs):
@@ -141,17 +143,21 @@ def process_web_request(cs, webroot):
           #Si se ha llegado a MAX_ACCESOS devolver un Error "403 Forbidden"
         #TODO Cookies
         datos_cabecera = "HTTP/1.1 200 OK\r\n" + str(datetime.now()) + "\r\n" + "Server: iotforyou03.org\r\n"
+        print("primeros datos de la cabecera")
                     
         # Obtener el tamaño del recurso en bytes.
         content_length = "Content-Length: " + os.stat(lineas_solicitud[1]).st_size + "\r\n"
         datos_cabecera = datos_cabecera + content_length
+        print("cabecera + tamaño")
                     
         # Extraer extensión para obtener el tipo de archivo. Necesario para la cabecera Content-Type       
         # Preparar respuesta con código 200. Construir una respuesta que incluya: la línea de respuesta y
           #las cabeceras Date, Server, Connection, Set-Cookie (para la cookie cookie_counter),
           #Content-Length y Content-Type.
         datos_cabecera = datos_cabecera + "Keep-Alive: timeout=" + str(TIMEOUT_CONNECTION) + ", max=" + str(TIMEOUT_CONNECTION) + "\r\n"
+        print("datos cabecera + keep alive")
         datos_cabecera = datos_cabecera + "Connection: Keep-Alive\r\n"
+        print("datos cabecera + keep alive")
 
         #TODO Cookie counter
         terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
@@ -159,7 +165,8 @@ def process_web_request(cs, webroot):
         for clave in filetypes:
             if(clave == terminacion):
                 content = filetypes[clave]
-        datos_cabecera = datos_cabecera + "Content-Type: " + content + "\r\n"  
+        datos_cabecera = datos_cabecera + "Content-Type: " + content + "\r\n" 
+        print("datos cabecera + content type") 
         # Leer y enviar el contenido del fichero a retornar en el cuerpo de la respuesta.
         # Se abre el fichero en modo lectura y modo binario
             # Se lee el fichero en bloques de BUFSIZE bytes (8KB)
