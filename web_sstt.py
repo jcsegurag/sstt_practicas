@@ -54,7 +54,7 @@ def cerrar_conexion(cs):
     """
     cs.close()
 
-def enviar_recurso(ruta,header, tam ,cs):
+def enviar_recurso(ruta, header, tam ,cs):
     #TODO
     if(len(header) + tam <= BUFSIZE):
         fichero = open(ruta, "r")
@@ -111,7 +111,11 @@ def process_web_request(cs, webroot):
                     
         # Comprobar si es un método GET. Si no devolver un error Error 405 "Method Not Allowed".
         if(lineas_solicitud[0] != "GET"):
-           enviar_recurso("405.html")
+            ruta = "405.html"
+            header = "HTTP/1.1 405 Method Not Allowed\r\n" + datetime.today().strftime('%A, %B, %d, %Y %H:%M:%S') +" GMT\r\n" + "Server: iotforyou03.org\r\n" + "Content-Length: " + os.stat("405.html").st_size + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n" 
+            tam = os.stat("405.html").st_size
+            enviar_recurso(ruta, header, tam, cs)
+            cerrar_conexion(cs)
         # Leer URL y eliminar parámetros si los hubiera
         #TODO
         # Comprobar si el recurso solicitado es /, En ese caso el recurso es index.html
@@ -120,13 +124,19 @@ def process_web_request(cs, webroot):
             recurso = "/index.html"
         else:
             recurso = lineas_solicitud[1]
+        header = "HTTP/1.1 200 OK\r\n" + datetime.today().strftime('%A, %B, %d, %Y %H:%M:%S') +" GMT\r\n" + "Server: iotforyou03.org\r\n" + "Content-Length: " + os.stat("index.html").st_size + "\r\n" + "Keep-Alive: timeout=" + TIMEOUT_CONNECTION + ", max=" + TIMEOUT_CONNECTION + "\r\n" + "Connection: Keep Alive\r\n" + "Content-Type: text/html\r\n" 
+        tam = os.stat("index.html").st_size
+        enviar_recurso(recurso, header, tam, cs)
 
         # Construir la ruta absoluta del recurso (webroot + recurso solicitado)
         ruta = webroot + recurso
         print(ruta)
         # Comprobar que el recurso (fichero) existe, si no devolver Error 404 "Not found"
         if not (os.path.isfile(lineas_solicitud[1])):
-            enviar_recurso("404.html", os.stat(lineas_solicitud[1]).st_size, cs)
+            ruta = "404.html"
+            header = "HTTP/1.1 404 Method Not Allowed\r\n" + datetime.today().strftime('%A, %B, %d, %Y %H:%M:%S') +" GMT\r\n" + "Server: iotforyou03.org\r\n" + "Content-Length: " + os.stat("404.html").st_size + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n" 
+            tam = os.stat("404.html").st_size
+            enviar_recurso("404.html", os.stat("404.html").st_size, cs)
         # Analizar las cabeceras. Imprimir cada cabecera y su valor. Si la cabecera es Cookie comprobar
           #el valor de cookie_counter para ver si ha llegado a MAX_ACCESOS.
           #Si se ha llegado a MAX_ACCESOS devolver un Error "403 Forbidden"
