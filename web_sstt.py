@@ -94,6 +94,11 @@ def process_web_request(cs, webroot):
         #TODO
         # Leer los datos con recv.
         data  = recibir_mensaje(cs)
+
+        if(not data):
+            print("cagaste")
+            cerrar_conexion()
+            sys.exit()
         #print(data)
         
         # Analizar que la línea de solicitud y comprobar está bien formateada según HTTP 1.1
