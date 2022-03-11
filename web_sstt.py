@@ -67,15 +67,15 @@ def enviar_recurso(ruta, header, tam ,cs):
         print("Enviar recurso > bufsize")
         enviar_mensaje(cs, header)
         print("Cabecera enviada")
-        fichero = open(ruta, "r")
+        fichero = open(ruta, "rb")
         while(True):
             print("Envio datos porque es muy grande el archivo")
             datos = fichero.read(BUFSIZE)
             if(not datos):
                 print("Ya no hay datos")
                 break
-            enviar_mensaje(cs, datos)
-            #cs.send(datos)
+            #enviar_mensaje(cs, datos)
+            cs.send(datos)
             print("Salir enviar recurso > bufsize")
 
 
