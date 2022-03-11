@@ -176,6 +176,7 @@ def process_web_request(cs, webroot):
         for clave in filetypes:
             if(clave == terminacion):
                 content = filetypes[clave]
+                print(content)
         datos_cabecera = datos_cabecera + "Content-Type: " + content + "\r\n" 
         print("datos cabecera + content type" + content) 
         # Leer y enviar el contenido del fichero a retornar en el cuerpo de la respuesta.
