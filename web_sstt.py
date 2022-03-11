@@ -113,7 +113,6 @@ def process_web_request(cs, webroot):
             comp = re.compile(atributos).fullmatch(str(lineas))
             if comp:
                 diccionario = {comp.group('clave'): comp.group('valor')}
-        print(diccionario)
         print("lasdlasd")
         # Comprobar si la versión de HTTP es 1.1
         if(lineas_solicitud[2] != "HTTP/1.1"):
