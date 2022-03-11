@@ -174,7 +174,7 @@ def process_web_request(cs, webroot):
         #TODO Cookie counter
         terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
         print(terminacion)
-        if(terminacion == "/"):
+        if(terminacion[0] == "/"):
             terminacion = "html"
         else:
             terminacion = terminacion[1]
