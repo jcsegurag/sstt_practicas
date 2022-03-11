@@ -173,10 +173,13 @@ def process_web_request(cs, webroot):
 
         #TODO Cookie counter
         terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
+        print (terminacion)
         content = " "
         for clave in filetypes:
+            print(clave)
             if(clave == terminacion):
                 content = filetypes[clave]
+                print(content)
         datos_cabecera = datos_cabecera + "Content-Type: " + content + "\r\n" 
         print("datos cabecera + content type") 
         print(datos_cabecera)
