@@ -44,7 +44,7 @@ def recibir_mensaje(cs):
     """ Esta función recibe datos a través del socket cs
         Leemos la información que nos llega. recv() devuelve un string con los datos.
     """
-    return cs.recv(BUFSIZE).decode()
+    return cs.recv().decode()
 
 
 def cerrar_conexion(cs):
