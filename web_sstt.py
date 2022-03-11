@@ -67,15 +67,15 @@ def enviar_recurso(ruta, header, tam ,cs):
         print("Enviar recurso > bufsize")
         enviar_mensaje(cs, header)
         print("Cabecera enviada")
-        fichero = open(ruta, "rb")
+        fichero = open(ruta, "r")
         while(True):
             print("Envio datos porque es muy grande el archivo")
             datos = fichero.read(BUFSIZE)
             if(not datos):
                 print("Ya no hay datos")
                 break
-            #enviar_mensaje(cs, datos)
-            cs.send(datos)
+            enviar_mensaje(cs, datos)
+            #cs.send(datos)
             print("Salir enviar recurso > bufsize")
 
 
@@ -195,7 +195,7 @@ def process_web_request(cs, webroot):
         tam = os.stat(ruta).st_size
         print("Tamano del archivo: " + str(tam))
         enviar_recurso(ruta, datos_cabecera, tam, cs)
-        cerrar_conexion(cs)
+
 
 def main():
     """ Función principal del servidor
