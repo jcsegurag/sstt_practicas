@@ -180,7 +180,6 @@ def process_web_request(cs, webroot):
         print (terminacion)
         content = " "
         for clave in filetypes:
-            print(clave)
             if(clave == terminacion):
                 content = filetypes[clave]
                 print(content)
