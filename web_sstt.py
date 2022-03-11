@@ -193,7 +193,7 @@ def process_web_request(cs, webroot):
             # Si es por timeout, se cierra el socket tras el período de persistencia.
                 # NOTA: Si hay algún error, enviar una respuesta de error con una pequeña página HTML que informe del error.
         tam = os.stat(ruta).st_size
-        print("Tamano del archivo: " + tam)
+        print("Tamano del archivo: " + str(tam))
         enviar_recurso(ruta, datos_cabecera, tam, cs)
 
 def main():
