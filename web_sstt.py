@@ -63,6 +63,7 @@ def enviar_recurso(ruta, header, tam ,cs):
 
         print("entro a enviar recurso y es mas pequeño que bufsize")
     else:
+        print("cabecera+tamano es mayor que el buffer")
         enviar_mensaje(cs, header)
         fichero = open(ruta, "rb")
         while(1):
