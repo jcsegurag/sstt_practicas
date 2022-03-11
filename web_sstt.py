@@ -176,9 +176,9 @@ def process_web_request(cs, webroot):
         for clave in filetypes:
             if(clave == terminacion):
                 content = filetypes[clave]
-                print(content)
         datos_cabecera = datos_cabecera + "Content-Type: " + content + "\r\n" 
-        print("datos cabecera + content type" + content) 
+        print("datos cabecera + content type") 
+        print(datos_cabecera)
         # Leer y enviar el contenido del fichero a retornar en el cuerpo de la respuesta.
         # Se abre el fichero en modo lectura y modo binario
             # Se lee el fichero en bloques de BUFSIZE bytes (8KB)
