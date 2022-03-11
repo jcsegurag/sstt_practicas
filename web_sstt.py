@@ -57,7 +57,7 @@ def enviar_recurso(ruta, header, tam ,cs):
     if(len(header) + tam <= BUFSIZE):
         fichero = open(ruta, "rb")
         datos = fichero.read()
-        para_enviar = header.encode() + datos
+        para_enviar = header + datos
         enviar_mensaje(cs, para_enviar)
         print("entro a enviar recurso y es mas pequeño que bufsize")
     else:
