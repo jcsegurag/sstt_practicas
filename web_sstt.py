@@ -121,7 +121,6 @@ def process_web_request(cs, webroot):
                     
         # Comprobar si es un método GET. Si no devolver un error Error 405 "Method Not Allowed".
         if(lineas_solicitud[0] != "GET"):
-            print("se mete en if de que no es un get")
             ruta = "./405.html"
             header = "HTTP/1.1 405 Method Not Allowed\r\n" + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./405.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n" 
             tam5 = os.stat("./405.html").st_size
@@ -156,21 +155,17 @@ def process_web_request(cs, webroot):
           #Si se ha llegado a MAX_ACCESOS devolver un Error "403 Forbidden"
         #TODO Cookies
         datos_cabecera = "HTTP/1.1 200 OK\r\n" + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n"
-        print("primeros datos de la cabecera")
                     
         # Obtener el tamaño del recurso en bytes.
         content_length = "Content-Length: " + str(os.stat(ruta).st_size) + "\r\n"
         datos_cabecera = datos_cabecera + content_length
-        print("cabecera + tamaño")
                     
         # Extraer extensión para obtener el tipo de archivo. Necesario para la cabecera Content-Type       
         # Preparar respuesta con código 200. Construir una respuesta que incluya: la línea de respuesta y
           #las cabeceras Date, Server, Connection, Set-Cookie (para la cookie cookie_counter),
           #Content-Length y Content-Type.
         datos_cabecera = datos_cabecera + "Keep-Alive: timeout=" + str(TIMEOUT_CONNECTION) + ", max=" + str(TIMEOUT_CONNECTION) + "\r\n"
-        print("datos cabecera + keep alive")
         datos_cabecera = datos_cabecera + "Connection: Keep-Alive\r\n"
-        print("datos cabecera + connection")
 
         #TODO Cookie counter
         terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
@@ -186,7 +181,6 @@ def process_web_request(cs, webroot):
                 content = filetypes[clave]
                 print(content)
         datos_cabecera = datos_cabecera + "Content-Type: " + content + "\r\n" 
-        print("datos cabecera + content type") 
         print(datos_cabecera)
         # Leer y enviar el contenido del fichero a retornar en el cuerpo de la respuesta.
         # Se abre el fichero en modo lectura y modo binario
