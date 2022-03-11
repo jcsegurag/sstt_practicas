@@ -169,17 +169,14 @@ def process_web_request(cs, webroot):
 
         #TODO Cookie counter
         terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
-        print(terminacion)
         if(terminacion[0] == "/"):
             terminacion = "html"
         else:
             terminacion = terminacion[1]
-        print (terminacion)
         content = " "
         for clave in filetypes:
             if(clave == terminacion):
                 content = filetypes[clave]
-                print(content)
         datos_cabecera = datos_cabecera + "Content-Type: " + content + "\r\n" 
         print(datos_cabecera)
         # Leer y enviar el contenido del fichero a retornar en el cuerpo de la respuesta.
