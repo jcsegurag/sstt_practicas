@@ -110,7 +110,7 @@ def process_web_request(cs, webroot):
         
         # Devuelve una lista con los atributos de las cabeceras.
         for linea in lineas:
-            comp = re.compile(atributos).fullmatch(lineas)
+            comp = re.compile(atributos).fullmatch(str(lineas))
             if comp:
                 diccionario = {comp.group('clave'): comp.group('valor')}
         print("lasdlasd")
