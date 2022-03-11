@@ -109,10 +109,10 @@ def process_web_request(cs, webroot):
         lineas_solicitud = lineas[0].split(sep = ' ', maxsplit = -1)
         
         # Devuelve una lista con los atributos de las cabeceras.
-        """for linea in lineas:
+        for linea in lineas:
             comp = re.compile(atributos).fullmatch(lineas)
             if comp:
-                diccionario = {comp.group('clave'): comp.group('valor')}"""
+                diccionario = {comp.group('clave'): comp.group('valor')}
         print("lasdlasd")
         # Comprobar si la versión de HTTP es 1.1
         if(lineas_solicitud[2] != "HTTP/1.1"):
@@ -168,7 +168,7 @@ def process_web_request(cs, webroot):
         datos_cabecera = datos_cabecera + "Keep-Alive: timeout=" + str(TIMEOUT_CONNECTION) + ", max=" + str(TIMEOUT_CONNECTION) + "\r\n"
         print("datos cabecera + keep alive")
         datos_cabecera = datos_cabecera + "Connection: Keep-Alive\r\n"
-        print("datos cabecera + keep alive")
+        print("datos cabecera + connection")
 
         #TODO Cookie counter
         terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
