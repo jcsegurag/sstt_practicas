@@ -67,7 +67,7 @@ def enviar_recurso(ruta, header, tam ,cs):
         print("cabecera+tamano es mayor que el buffer")
         enviar_mensaje(cs, header)
         fichero = open(ruta, "rb")
-        while(1):
+        while(True):
             datos = fichero.read(BUFSIZE)
             if(not datos):
                 break
