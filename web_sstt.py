@@ -31,7 +31,7 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger()
 
 #Expresión regular para crear diccionario con atributos de la solicitud
-atributos = r'(?P<clave>[A-Z].*): (?P<valor>.*)'
+atributos = r'(?P<clave>[A-Z].): (?P<valor>.)'
 
 def enviar_mensaje(cs, data):
     """ Esta función envía datos (data) a través del socket cs
@@ -53,15 +53,16 @@ def cerrar_conexion(cs):
     cs.close()
 
 def enviar_recurso(ruta, header, tam ,cs):
-    #TODO
+    tamano_todo = len(header) + tam
     if(len(header) + tam <= BUFSIZE):
+        print("entro a enviar recurso y es mas pequeño que bufsize")
         fichero = open(ruta, "rb")
         datos = fichero.read()
         para_enviar = header.encode() + datos
         #enviar_mensaje(cs, para_enviar)
         cs.send(para_enviar)
+        print("salgo de enviar recurso y es mas pequeño que bufsize")
 
-        print("entro a enviar recurso y es mas pequeño que bufsize")
     else:
         print("cabecera+tamano es mayor que el buffer")
         enviar_mensaje(cs, header)
@@ -70,8 +71,9 @@ def enviar_recurso(ruta, header, tam ,cs):
             datos = fichero.read(BUFSIZE)
             if(not datos):
                 break
-            enviar_mensaje(cs, datos)
-            print("entro a enviar recurso y es mas grande que bufsize")
+            #enviar_mensaje(cs, datos)
+            cs.send(datos)
+            print("salgo a enviar recurso y es mas grande que bufsize")
 
 
 def process_cookies(headers,  cs):
@@ -88,17 +90,17 @@ def process_cookies(headers,  cs):
 def process_web_request(cs, webroot):
         #Procesamiento principal de los mensajes recibidos.
         #Típicamente se seguirá un procedimiento similar al siguiente (aunque el alumno puede modificarlo si lo desea)
-
-        # Bucle para esperar hasta que lleguen datos en la red a través del socket cs con select()
     while(True):
+        # Bucle para esperar hasta que lleguen datos en la red a través del socket cs con select()
         # Se comprueba si hay que cerrar la conexión por exceder TIMEOUT_CONNECTION segundos
         #  sin recibir ningún mensaje o hay datos. Se utiliza select.select
-        #TODO
+        (rsublist, _, _) = select.select([cs], [], [cs], TIMEOUT_CONNECTION)
+        if not rsublist: 
+            break
         # Si no es por timeout y hay datos en el socket cs.
-        #TODO
         # Leer los datos con recv.
         data  = recibir_mensaje(cs)
-        print(data)
+        #print(data)
 
         if(not data):
             print("cagaste")
@@ -111,10 +113,10 @@ def process_web_request(cs, webroot):
         lineas_solicitud = lineas[0].split(sep = ' ', maxsplit = -1)
         
         # Devuelve una lista con los atributos de las cabeceras.
-        for linea in lineas:
+        """for linea in lineas:
             comp = re.compile(atributos).fullmatch(str(lineas))
             if comp:
-                diccionario = {comp.group('clave'): comp.group('valor')}
+                diccionario = {comp.group('clave'): comp.group('valor')}"""
         print("lasdlasd")
         # Comprobar si la versión de HTTP es 1.1
         if(lineas_solicitud[2] != "HTTP/1.1"):
@@ -139,10 +141,10 @@ def process_web_request(cs, webroot):
         # Construir la ruta absoluta del recurso (webroot + recurso solicitado)
         ruta = webroot + recurso
 
-        if(ruta == "./"):
+        """if(ruta == "/home/jotace/Escritorio/sstt_practicas/index.html"):
             header = "HTTP/1.1 200 OK\r\n" + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./index.html").st_size) + "\r\n" + "Keep-Alive: timeout=" + str(TIMEOUT_CONNECTION) + ", max=" + str(TIMEOUT_CONNECTION) + "\r\n" + "Connection: Keep Alive\r\n" + "Content-Type: text/html\r\n" 
             tami = os.stat("./index.html").st_size
-            enviar_recurso(ruta, header, tami, cs)
+            enviar_recurso(ruta, header, tami, cs)"""
 
         print(ruta)
         # Comprobar que el recurso (fichero) existe, si no devolver Error 404 "Not found"
@@ -191,9 +193,6 @@ def process_web_request(cs, webroot):
         print(tam)
         enviar_recurso(ruta, datos_cabecera, tam, cs)
 
-        cerrar_conexion(cs)
-        sys.exit
-
 def main():
     """ Función principal del servidor
     """
@@ -237,16 +236,16 @@ def main():
         sock.bind((args.host, args.port))
         sock.listen()
         while(True):
-            #try:
-            socket_cliente, addr_cliente = sock.accept()
-            hijo = os.fork()
-            if(hijo == 0):
-                cerrar_conexion(sock)
-                process_web_request(socket_cliente, args.webroot)
-            else:
-                cerrar_conexion(socket_cliente)
-            #except socket.error:
-                #break
+            try:
+                socket_cliente, addr_cliente = sock.accept()
+                hijo = os.fork()
+                if(hijo == 0):
+                    cerrar_conexion(sock)
+                    process_web_request(socket_cliente, args.webroot)
+                else:
+                    cerrar_conexion(socket_cliente)
+            except socket.error:
+                break
     except KeyboardInterrupt:
         True
         
