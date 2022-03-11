@@ -99,6 +99,7 @@ def process_web_request(cs, webroot):
             break
         # Si no es por timeout y hay datos en el socket cs.
         # Leer los datos con recv.
+        print("me he quedado pillado xd te jodes maquina")
         data  = recibir_mensaje(cs)
         #print(data)
 
