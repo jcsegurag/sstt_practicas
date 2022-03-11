@@ -138,7 +138,7 @@ def process_web_request(cs, webroot):
         # Construir la ruta absoluta del recurso (webroot + recurso solicitado)
         ruta = webroot + recurso
 
-        header = "HTTP/1.1 200 OK\r\n" + str(datetime.now()) + "\r\n" + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./index.html").st_size) + "\r\n" + "Keep-Alive: timeout=" + str(TIMEOUT_CONNECTION) + ", max=" + str(TIMEOUT_CONNECTION) + "\r\n" + "Connection: Keep Alive\r\n" + "Content-Type: text/html\r\n" 
+        header = "HTTP/1.1uwu 200 OK\r\n" + str(datetime.now()) + "\r\n" + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./index.html").st_size) + "\r\n" + "Keep-Alive: timeout=" + str(TIMEOUT_CONNECTION) + ", max=" + str(TIMEOUT_CONNECTION) + "\r\n" + "Connection: Keep Alive\r\n" + "Content-Type: text/html\r\n" 
         tami = os.stat("./index.html").st_size
         enviar_recurso(ruta, header, tami, cs)
 
