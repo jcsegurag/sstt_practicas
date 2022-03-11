@@ -55,25 +55,28 @@ def cerrar_conexion(cs):
 def enviar_recurso(ruta, header, tam ,cs):
     tamano_todo = len(header) + tam
     if(len(header) + tam <= BUFSIZE):
-        print("entro a enviar recurso y es mas pequeño que bufsize")
+        print("Enviar recurso < bufsize")
         fichero = open(ruta, "rb")
         datos = fichero.read()
         para_enviar = header.encode() + datos
         #enviar_mensaje(cs, para_enviar)
         cs.send(para_enviar)
-        print("salgo de enviar recurso y es mas pequeño que bufsize")
+        print("Salir enviar recurso < bufsize")
 
     else:
-        print("cabecera+tamano es mayor que el buffer")
+        print("Enviar recurso > bufsize")
         enviar_mensaje(cs, header)
+        print("Cabecera enviada")
         fichero = open(ruta, "rb")
         while(True):
+            print("Envio datos porque es muy grande el archivo")
             datos = fichero.read(BUFSIZE)
             if(not datos):
+                print("Ya no hay datos")
                 break
             #enviar_mensaje(cs, datos)
             cs.send(datos)
-            print("salgo a enviar recurso y es mas grande que bufsize")
+            print("Salir enviar recurso > bufsize")
 
 
 def process_cookies(headers,  cs):
@@ -100,7 +103,6 @@ def process_web_request(cs, webroot):
         # Si no es por timeout y hay datos en el socket cs.
         # Leer los datos con recv.
         data  = recibir_mensaje(cs)
-        print("me he quedado pillado xd te jodes maquina 103")
         #print(data)
 
         if(not data):
@@ -147,7 +149,7 @@ def process_web_request(cs, webroot):
             tami = os.stat("./index.html").st_size
             enviar_recurso(ruta, header, tami, cs)"""
 
-        print(ruta)
+        print("Ruta: " + ruta)
         # Comprobar que el recurso (fichero) existe, si no devolver Error 404 "Not found"
         if not (os.path.isfile(ruta)):
             ruta = "./404.html"
@@ -191,7 +193,7 @@ def process_web_request(cs, webroot):
             # Si es por timeout, se cierra el socket tras el período de persistencia.
                 # NOTA: Si hay algún error, enviar una respuesta de error con una pequeña página HTML que informe del error.
         tam = os.stat(ruta).st_size
-        print(tam)
+        print("Tamano del archivo: " + tam)
         enviar_recurso(ruta, datos_cabecera, tam, cs)
 
 def main():
