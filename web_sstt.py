@@ -98,6 +98,7 @@ def process_web_request(cs, webroot):
         #TODO
         # Leer los datos con recv.
         data  = recibir_mensaje(cs)
+        print(data)
 
         if(not data):
             print("cagaste")
