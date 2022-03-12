@@ -109,13 +109,6 @@ def process_web_request(cs, webroot):
         # Si no es por timeout y hay datos en el socket cs.
         # Leer los datos con recv.
         data  = recibir_mensaje(cs)
-        #print(data)
-
-        if(not data):
-            print("cagaste")
-            cerrar_conexion(cs)
-            sys.exit()
-        #print(data)
         
         # Analizar que la línea de solicitud y comprobar está bien formateada según HTTP 1.1
         lineas = data.split(sep = "\r\n", maxsplit = -1)
@@ -126,11 +119,11 @@ def process_web_request(cs, webroot):
             comp = re.compile(atributos).fullmatch(str(lineas))
             if comp:
                 diccionario = {comp.group('clave'): comp.group('valor')}
-        print("lasdlasd")
+
         # Comprobar si la versión de HTTP es 1.1
         if(lineas_solicitud[2] != "HTTP/1.1"):
             print("La versidon HTTP no es la 1.1")
-                    
+
         # Comprobar si es un método GET. Si no devolver un error Error 405 "Method Not Allowed".
         if(lineas_solicitud[0] != "GET"):
             ruta = "./405.html"
@@ -161,20 +154,18 @@ def process_web_request(cs, webroot):
           #el valor de cookie_counter para ver si ha llegado a MAX_ACCESOS.
           #Si se ha llegado a MAX_ACCESOS devolver un Error "403 Forbidden"
         #TODO Cookies
-        datos_cabecera = "HTTP/1.1 200 OK\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n"
-                    
-        # Obtener el tamaño del recurso en bytes.
-        content_length = "Content-Length: " + str(os.stat(ruta).st_size) + "\r\n"
-        datos_cabecera = datos_cabecera + content_length
-                    
+        
+        # Obtener el tamaño del recurso en bytes.            
         # Extraer extensión para obtener el tipo de archivo. Necesario para la cabecera Content-Type       
         # Preparar respuesta con código 200. Construir una respuesta que incluya: la línea de respuesta y
           #las cabeceras Date, Server, Connection, Set-Cookie (para la cookie cookie_counter),
           #Content-Length y Content-Type.
+        #TODO Cookie counter
+        datos_cabecera = "HTTP/1.1 200 OK\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n"                 
+        content_length = "Content-Length: " + str(os.stat(ruta).st_size) + "\r\n"
+        datos_cabecera = datos_cabecera + content_length
         datos_cabecera = datos_cabecera + "Keep-Alive: timeout=" + str(TIMEOUT_CONNECTION) + ", max=" + str(TIMEOUT_CONNECTION) + "\r\n"
         datos_cabecera = datos_cabecera + "Connection: Keep-Alive\r\n"
-
-        #TODO Cookie counter
         terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
         if(terminacion[0] == "/"):
             terminacion = "html"
@@ -190,7 +181,6 @@ def process_web_request(cs, webroot):
         # Se abre el fichero en modo lectura y modo binario
             # Se lee el fichero en bloques de BUFSIZE bytes (8KB)
             # Cuando ya no hay más información para leer, se corta el bucle
-
             # Si es por timeout, se cierra el socket tras el período de persistencia.
                 # NOTA: Si hay algún error, enviar una respuesta de error con una pequeña página HTML que informe del error.
         tam = os.stat(ruta).st_size
