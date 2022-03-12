@@ -208,7 +208,8 @@ def process_web_request(cs, webroot):
         datos_cabecera = datos_cabecera + content_length
         datos_cabecera = datos_cabecera + "Keep-Alive: timeout=" + str(40) + ", max=" + str(40) + "\r\n"
         datos_cabecera = datos_cabecera + "Connection: Keep-Alive\r\n"
-        #datos_cabecera = datos_cabecera + respuesta
+        if int(cookie_counter) < MAX_ACCESOS:
+            datos_cabecera = datos_cabecera + respuesta
 
         terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
         if(terminacion[0] == "/"):
