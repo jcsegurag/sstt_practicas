@@ -120,15 +120,11 @@ def process_web_request(cs, webroot):
         lineas = data.split(sep = "\r\n", maxsplit = -1)
         lineas_solicitud = lineas[0].split(sep = ' ', maxsplit = -1)
         
-        # Devuelve una lista con los atributos de las cabeceras.
+        """# Devuelve una lista con los atributos de las cabeceras.
         for linea in lineas:
             comp = re.compile(atributos).fullmatch(str(lineas))
             if comp:
-                diccionario = {comp.group('clave'): comp.group('valor')}
-
-        # Comprobar si la versión de HTTP es 1.1
-        """if(lineas_solicitud[2] != "HTTP/1.1"):
-            print("La versidon HTTP no es la 1.1")"""
+                diccionario = {comp.group('clave'): comp.group('valor')}"""
 
         # Comprobar si es un método GET. Si no devolver un error Error 405 "Method Not Allowed".
         if(lineas_solicitud[0] != "GET"):
@@ -142,8 +138,11 @@ def process_web_request(cs, webroot):
             tam5 = os.stat("./405.html").st_size
             enviar_recurso(ruta, header, tam5, cs)
             cerrar_conexion(cs)
+
+        # Comprobar si la versión de HTTP es 1.1
         if(lineas_solicitud[2] != "HTTP/1.1"):
             print("La versidon HTTP no es la 1.1")
+
         # Leer URL y eliminar parámetros si los hubiera
         #TODO
         # Comprobar si el recurso solicitado es /, En ese caso el recurso es index.html
