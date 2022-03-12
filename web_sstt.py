@@ -77,12 +77,6 @@ def enviar_recurso(ruta, header, tam ,cs):
             #enviar_mensaje(cs, datos)
             cs.send(datos)
             print("Salir enviar recurso > bufsize")
-        """datos = fichero.read(BUFSIZE)
-        while(datos):
-            print("Envio datos porque es muy grande el archivo")
-            datos = fichero.read(BUFSIZE)
-            cs.send(datos)
-            print("Salir enviar recurso > bufsize")"""
 
 
 def process_cookies(headers,  cs):
@@ -109,6 +103,7 @@ def process_web_request(cs, webroot):
         # Si no es por timeout y hay datos en el socket cs.
         # Leer los datos con recv.
         data  = recibir_mensaje(cs)
+        print(data)
         
         # Analizar que la línea de solicitud y comprobar está bien formateada según HTTP 1.1
         lineas = data.split(sep = "\r\n", maxsplit = -1)
@@ -154,6 +149,7 @@ def process_web_request(cs, webroot):
           #el valor de cookie_counter para ver si ha llegado a MAX_ACCESOS.
           #Si se ha llegado a MAX_ACCESOS devolver un Error "403 Forbidden"
         #TODO Cookies
+
         
         # Obtener el tamaño del recurso en bytes.            
         # Extraer extensión para obtener el tipo de archivo. Necesario para la cabecera Content-Type       
@@ -161,11 +157,20 @@ def process_web_request(cs, webroot):
           #las cabeceras Date, Server, Connection, Set-Cookie (para la cookie cookie_counter),
           #Content-Length y Content-Type.
         #TODO Cookie counter
+        cookie_counter = process_cookies()
+        if cookie_counter == MAX_ACCESOS:
+            # error 403 forbidden
+            respuesta = "Set-Cookie: cookie_counter: " + cookie_counter + "\r\n"
+        
+
+
+
         datos_cabecera = "HTTP/1.1 200 OK\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n"                 
         content_length = "Content-Length: " + str(os.stat(ruta).st_size) + "\r\n"
         datos_cabecera = datos_cabecera + content_length
         datos_cabecera = datos_cabecera + "Keep-Alive: timeout=" + str(TIMEOUT_CONNECTION) + ", max=" + str(TIMEOUT_CONNECTION) + "\r\n"
         datos_cabecera = datos_cabecera + "Connection: Keep-Alive\r\n"
+
         terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
         if(terminacion[0] == "/"):
             terminacion = "html"
