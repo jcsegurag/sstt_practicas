@@ -156,7 +156,7 @@ def process_web_request(cs, webroot):
             ruta = "./404.html"
             header = "HTTP/1.1 404 Method Not Allowed\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./404.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n" 
             tam4 = os.stat("./404.html").st_size
-            enviar_recurso("./404.html", tam4, cs)
+            enviar_recurso("./404.html",header, tam4, cs)
         # Analizar las cabeceras. Imprimir cada cabecera y su valor. Si la cabecera es Cookie comprobar
           #el valor de cookie_counter para ver si ha llegado a MAX_ACCESOS.
           #Si se ha llegado a MAX_ACCESOS devolver un Error "403 Forbidden"
