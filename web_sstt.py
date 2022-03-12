@@ -193,8 +193,8 @@ def process_web_request(cs, webroot):
                 if(clave == terminacion):
                     content = filetypes[clave]
             header = "HTTP/1.1 403 Forbidden\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./403.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: " + content + "\r\n\r\n" 
-            tam5 = os.stat("./403.html").st_size
-            enviar_recurso(ruta, header, tam5, cs)
+            tam6 = os.stat("./403.html").st_size
+            enviar_recurso(ruta, header, tam6, cs)
         else :
             cookie_counter = cookie_counter + 1
             respuesta = "Set-Cookie: cookie_counter=" + str(cookie_counter) + "\r\n"
