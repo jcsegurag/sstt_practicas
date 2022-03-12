@@ -77,14 +77,14 @@ def enviar_recurso(ruta, header, tam ,cs):
             #print("Salir enviar recurso > bufsize")
 
 
-def process_cookies(headers,  cs):
-    """ Esta función procesa la cookie cookie_counter
+"""def process_cookies(headers,  cs):
+     Esta función procesa la cookie cookie_counter
         1. Se analizan las cabeceras en headers para buscar la cabecera Cookie
         2. Una vez encontrada una cabecera Cookie se comprueba si el valor es cookie_counter
         3. Si no se encuentra cookie_counter , se devuelve 1
         4. Si se encuentra y tiene el valor MAX_ACCESSOS se devuelve MAX_ACCESOS
         5. Si se encuentra y tiene un valor 1 <= x < MAX_ACCESOS se incrementa en 1 y se devuelve el valor
-    """
+    
     lineas = headers.split(sep = "\r\n", maxsplit = -1)
     i=0
     for linea in lineas:
@@ -95,7 +95,7 @@ def process_cookies(headers,  cs):
         if (cabeceras[0] == "Cookie: ") & (cabeceras[1] == MAX_ACCESOS):
             return MAX_ACCESOS
         else:
-            return 1
+            return 1"""
 
 
     
@@ -166,9 +166,9 @@ def process_web_request(cs, webroot):
           #las cabeceras Date, Server, Connection, Set-Cookie (para la cookie cookie_counter),
           #Content-Length y Content-Type.
         #TODO Cookie counter
-        cookie_counter = process_cookies(data, cs)
+        """cookie_counter = process_cookies(data, cs)
         respuesta = " "
-        """if cookie_counter == MAX_ACCESOS:
+        if cookie_counter == MAX_ACCESOS:
             ruta = "./403.html"
             terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
             if(terminacion[0] == "/"):
