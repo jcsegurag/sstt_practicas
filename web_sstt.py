@@ -103,9 +103,9 @@ def process_web_request(cs, webroot):
         # Bucle para esperar hasta que lleguen datos en la red a través del socket cs con select()
         # Se comprueba si hay que cerrar la conexión por exceder TIMEOUT_CONNECTION segundos
         #  sin recibir ningún mensaje o hay datos. Se utiliza select.select
-        (rsublist, _, _) = select.select([cs], [], [cs], TIMEOUT_CONNECTION)
+        """(rsublist, _, _) = select.select([cs], [], [cs], TIMEOUT_CONNECTION)
         if not rsublist: 
-            break
+            break"""
         # Si no es por timeout y hay datos en el socket cs.
         # Leer los datos con recv.
         data  = recibir_mensaje(cs)
