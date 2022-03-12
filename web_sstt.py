@@ -166,7 +166,7 @@ def process_web_request(cs, webroot):
           #las cabeceras Date, Server, Connection, Set-Cookie (para la cookie cookie_counter),
           #Content-Length y Content-Type.
         #TODO Cookie counter
-        cookie_counter = process_cookies(data, cs)
+        """cookie_counter = process_cookies(data, cs)
         respuesta = " "
         if cookie_counter == MAX_ACCESOS:
             ruta = "./403.html"
@@ -179,7 +179,7 @@ def process_web_request(cs, webroot):
             tam5 = os.stat("./405.html").st_size
             enviar_recurso(ruta, header, tam5, cs)
         else :
-            respuesta = "Set-Cookie: cookie_counter: " + str(cookie_counter) + "\r\n"
+            respuesta = "Set-Cookie: cookie_counter: " + str(cookie_counter) + "\r\n"""
         
 
 
