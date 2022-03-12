@@ -139,7 +139,7 @@ def process_web_request(cs, webroot):
             #cerrar_conexion(cs)
 
         # Comprobar si la versión de HTTP es 1.1
-        if(lineas_solicitud[2] != "HTTP/1.1"):
+        if(lineas_solicitud[0] != "HTTP/1.1"):
             print("La versidon HTTP no es la 1.1")
 
         # Leer URL y eliminar parámetros si los hubiera
