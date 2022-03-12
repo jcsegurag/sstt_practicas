@@ -198,18 +198,18 @@ def process_web_request(cs, webroot):
         else :
             cookie_counter = cookie_counter + 1
             respuesta = "Set-Cookie: cookie_counter=" + str(cookie_counter) + "\r\n"
+            datos_cabecera = respuesta
             
         
 
 
 
-        datos_cabecera = "HTTP/1.1 200 OK\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n"                 
+        datos_cabecera = datos_cabecera + "HTTP/1.1 200 OK\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n"                 
         content_length = "Content-Length: " + str(os.stat(ruta).st_size) + "\r\n"
         datos_cabecera = datos_cabecera + content_length
         datos_cabecera = datos_cabecera + "Keep-Alive: timeout=" + str(40) + ", max=" + str(40) + "\r\n"
         datos_cabecera = datos_cabecera + "Connection: Keep-Alive\r\n"
-        if int(cookie_counter) <= MAX_ACCESOS:
-            datos_cabecera = datos_cabecera + respuesta
+        #datos_cabecera = datos_cabecera + respuesta
 
         terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
         if(terminacion[0] == "/"):
