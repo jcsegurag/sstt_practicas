@@ -113,7 +113,7 @@ def process_web_request(cs, webroot):
 
         if(not data):
             print("cagaste")
-            cerrar_conexion()
+            cerrar_conexion(cs)
             sys.exit()
         #print(data)
         
