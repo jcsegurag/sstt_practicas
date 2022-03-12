@@ -201,6 +201,8 @@ def process_web_request(cs, webroot):
         tam = os.stat(ruta).st_size
         print("Tamano del archivo: " + str(tam))
         enviar_recurso(ruta, datos_cabecera, tam, cs)
+    cerrar_conexion(cs)
+    sys.exit()
 
 
 def main():
