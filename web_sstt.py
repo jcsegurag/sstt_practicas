@@ -90,7 +90,7 @@ def process_cookies(headers,  cs):
     for linea in lineas:
         cabeceras = linea[i].split(sep = ' ', maxsplit = -1)
         i = i+1
-        if (cabeceras[0] == "Cookie: ") & cabeceras[1] != "1" & cabeceras[1] != str(MAX_ACCESOS):
+        if (cabeceras[0] == "Cookie: ") & cabeceras[1] != "cookie_counter = 1" & cabeceras[1] != "cookie_counter = " + str(MAX_ACCESOS):
             return cabeceras[1] + 1
         if (cabeceras[0] == "Cookie: ") & (cabeceras[1] == MAX_ACCESOS):
             return MAX_ACCESOS
@@ -166,14 +166,11 @@ def process_web_request(cs, webroot):
           #las cabeceras Date, Server, Connection, Set-Cookie (para la cookie cookie_counter),
           #Content-Length y Content-Type.
         #TODO Cookie counter
-        """cookie_counter = process_cookies(data, cs)
+        cookie_counter = process_cookies(data, cs)
+        respuesta = " "
         if cookie_counter == MAX_ACCESOS:
             ruta = "./403.html"
             terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
-            if(terminacion[0] == "/"):
-                terminacion = "html"
-            else:
-                terminacion = terminacion[1]
             content = " "
             for clave in filetypes:
                 if(clave == terminacion):
@@ -182,7 +179,7 @@ def process_web_request(cs, webroot):
             tam5 = os.stat("./405.html").st_size
             enviar_recurso(ruta, header, tam5, cs)
         else :
-            respuesta = "Set-Cookie: cookie_counter: " + str(cookie_counter) + "\r\n" """
+            respuesta = "Set-Cookie: cookie_counter: " + str(cookie_counter) + "\r\n"
         
 
 
@@ -194,6 +191,7 @@ def process_web_request(cs, webroot):
         datos_cabecera = datos_cabecera + "Connection: Keep-Alive\r\n"
 
         terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
+        terminacion = terminacion[1]
         content = " "
         for clave in filetypes:
             if(clave == terminacion):
