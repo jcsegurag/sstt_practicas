@@ -134,10 +134,6 @@ def process_web_request(cs, webroot):
         if(lineas_solicitud[0] != "GET"):
             ruta = "./405.html"
             terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
-            if(terminacion[0] == "/"):
-                terminacion = "html"
-            else:
-                terminacion = terminacion[1]
             content = " "
             for clave in filetypes:
                 if(clave == terminacion):
@@ -163,10 +159,6 @@ def process_web_request(cs, webroot):
         if not (os.path.isfile(ruta)):
             ruta = "./404.html"
             terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
-            if(terminacion[0] == "/"):
-                terminacion = "html"
-            else:
-                terminacion = terminacion[1]
             content = " "
             for clave in filetypes:
                 if(clave == terminacion):
@@ -211,10 +203,6 @@ def process_web_request(cs, webroot):
         datos_cabecera = datos_cabecera + "Connection: Keep-Alive\r\n"
 
         terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
-        if(terminacion[0] == "/"):
-            terminacion = "html"
-        else:
-            terminacion = terminacion[1]
         content = " "
         for clave in filetypes:
             if(clave == terminacion):
