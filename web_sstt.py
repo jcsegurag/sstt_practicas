@@ -54,7 +54,7 @@ def cerrar_conexion(cs):
 
 def enviar_recurso(ruta, header, tam ,cs):
     tamano_todo = len(header) + tam
-    if(len(header) + tam <= BUFSIZE):
+    if(tamano_todo <= BUFSIZE):
         print("Enviar recurso < bufsize")
         fichero = open(ruta, "rb")
         datos = fichero.read()
@@ -103,9 +103,9 @@ def process_web_request(cs, webroot):
         # Bucle para esperar hasta que lleguen datos en la red a través del socket cs con select()
         # Se comprueba si hay que cerrar la conexión por exceder TIMEOUT_CONNECTION segundos
         #  sin recibir ningún mensaje o hay datos. Se utiliza select.select
-        """(rsublist, _, _) = select.select([cs], [], [cs], TIMEOUT_CONNECTION)
+        (rsublist, _, _) = select.select([cs], [], [cs], TIMEOUT_CONNECTION)
         if not rsublist: 
-            break"""
+            break
         # Si no es por timeout y hay datos en el socket cs.
         # Leer los datos con recv.
         data  = recibir_mensaje(cs)
@@ -122,10 +122,10 @@ def process_web_request(cs, webroot):
         lineas_solicitud = lineas[0].split(sep = ' ', maxsplit = -1)
         
         # Devuelve una lista con los atributos de las cabeceras.
-        """for linea in lineas:
+        for linea in lineas:
             comp = re.compile(atributos).fullmatch(str(lineas))
             if comp:
-                diccionario = {comp.group('clave'): comp.group('valor')}"""
+                diccionario = {comp.group('clave'): comp.group('valor')}
         print("lasdlasd")
         # Comprobar si la versión de HTTP es 1.1
         if(lineas_solicitud[2] != "HTTP/1.1"):
@@ -134,7 +134,7 @@ def process_web_request(cs, webroot):
         # Comprobar si es un método GET. Si no devolver un error Error 405 "Method Not Allowed".
         if(lineas_solicitud[0] != "GET"):
             ruta = "./405.html"
-            header = "HTTP/1.1 405 Method Not Allowed\r\n" + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./405.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n" 
+            header = "HTTP/1.1 405 Method Not Allowed\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./405.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n" 
             tam5 = os.stat("./405.html").st_size
             enviar_recurso(ruta, header, tam5, cs)
             cerrar_conexion(cs)
@@ -150,23 +150,18 @@ def process_web_request(cs, webroot):
         # Construir la ruta absoluta del recurso (webroot + recurso solicitado)
         ruta = webroot + recurso
 
-        """if(ruta == "/home/jotace/Escritorio/sstt_practicas/index.html"):
-            header = "HTTP/1.1 200 OK\r\n" + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./index.html").st_size) + "\r\n" + "Keep-Alive: timeout=" + str(TIMEOUT_CONNECTION) + ", max=" + str(TIMEOUT_CONNECTION) + "\r\n" + "Connection: Keep Alive\r\n" + "Content-Type: text/html\r\n" 
-            tami = os.stat("./index.html").st_size
-            enviar_recurso(ruta, header, tami, cs)"""
-
         print("Ruta: " + ruta)
         # Comprobar que el recurso (fichero) existe, si no devolver Error 404 "Not found"
         if not (os.path.isfile(ruta)):
             ruta = "./404.html"
-            header = "HTTP/1.1 404 Method Not Allowed\r\n" + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./404.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n" 
+            header = "HTTP/1.1 404 Method Not Allowed\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./404.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n" 
             tam4 = os.stat("./404.html").st_size
             enviar_recurso("./404.html", tam4, cs)
         # Analizar las cabeceras. Imprimir cada cabecera y su valor. Si la cabecera es Cookie comprobar
           #el valor de cookie_counter para ver si ha llegado a MAX_ACCESOS.
           #Si se ha llegado a MAX_ACCESOS devolver un Error "403 Forbidden"
         #TODO Cookies
-        datos_cabecera = "HTTP/1.1 200 OK\r\n" + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n"
+        datos_cabecera = "HTTP/1.1 200 OK\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n"
                     
         # Obtener el tamaño del recurso en bytes.
         content_length = "Content-Length: " + str(os.stat(ruta).st_size) + "\r\n"
@@ -189,7 +184,7 @@ def process_web_request(cs, webroot):
         for clave in filetypes:
             if(clave == terminacion):
                 content = filetypes[clave]
-        datos_cabecera = datos_cabecera + "Content-Type: " + content + "\r\n" 
+        datos_cabecera = datos_cabecera + "Content-Type: " + content + "\r\n" + "\r\n"
         print(datos_cabecera)
         # Leer y enviar el contenido del fichero a retornar en el cuerpo de la respuesta.
         # Se abre el fichero en modo lectura y modo binario
@@ -231,16 +226,11 @@ def main():
         * Crea un socket TCP (SOCK_STREAM)
         * Permite reusar la misma dirección previamente vinculada a otro proceso. Debe ir antes de sock.bind
         * Vinculamos el socket a una IP y puerto elegidos
-
         * Escucha conexiones entrantes
-
         * Bucle infinito para mantener el servidor activo indefinidamente
             - Aceptamos la conexión
-
             - Creamos un proceso hijo
-
             - Si es el proceso hijo se cierra el socket del padre y procesar la petición con process_web_request()
-
             - Si es el proceso padre cerrar el socket que gestiona el hijo.
         """
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
@@ -248,16 +238,16 @@ def main():
         sock.bind((args.host, args.port))
         sock.listen()
         while(True):
-            try:
-                socket_cliente, addr_cliente = sock.accept()
-                hijo = os.fork()
-                if(hijo == 0):
-                    cerrar_conexion(sock)
-                    process_web_request(socket_cliente, args.webroot)
-                else:
-                    cerrar_conexion(socket_cliente)
-            except socket.error:
-                break
+            #try:
+            socket_cliente, addr_cliente = sock.accept()
+            hijo = os.fork()
+            if(hijo == 0):
+                cerrar_conexion(sock)
+                process_web_request(socket_cliente, args.webroot)
+            else:
+                cerrar_conexion(socket_cliente)
+            #except socket.error:
+                #break
     except KeyboardInterrupt:
         True
         
