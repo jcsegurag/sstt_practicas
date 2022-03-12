@@ -55,26 +55,26 @@ def cerrar_conexion(cs):
 def enviar_recurso(ruta, header, tam ,cs):
     tamano_todo = len(header) + tam
     if(tamano_todo <= BUFSIZE):
-        print("Enviar recurso < bufsize")
+        #print("Enviar recurso < bufsize")
         fichero = open(ruta, "rb")
         datos = fichero.read()
         para_enviar = header.encode() + datos
         cs.send(para_enviar)
-        print("Salir enviar recurso < bufsize")
+        #print("Salir enviar recurso < bufsize")
 
     else:
-        print("Enviar recurso > bufsize")
+        #print("Enviar recurso > bufsize")
         enviar_mensaje(cs, header)
-        print("Cabecera enviada")
+        #print("Cabecera enviada")
         fichero = open(ruta, "rb")
         while(True):
-            print("Envio datos porque es muy grande el archivo")
+            #print("Envio datos porque es muy grande el archivo")
             datos = fichero.read(BUFSIZE)
             if(not datos):
-                print("Ya no hay datos")
+                #print("Ya no hay datos")
                 break
             cs.send(datos)
-            print("Salir enviar recurso > bufsize")
+            #print("Salir enviar recurso > bufsize")
 
 
 def process_cookies(headers,  cs):
