@@ -166,11 +166,15 @@ def process_web_request(cs, webroot):
           #las cabeceras Date, Server, Connection, Set-Cookie (para la cookie cookie_counter),
           #Content-Length y Content-Type.
         #TODO Cookie counter
-        """cookie_counter = process_cookies(data, cs)
+        cookie_counter = process_cookies(data, cs)
         respuesta = " "
-        if cookie_counter == MAX_ACCESOS:
+        """if cookie_counter == MAX_ACCESOS:
             ruta = "./403.html"
             terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
+            if(terminacion[0] == "/"):
+                terminacion = "html"
+            else:
+                terminacion = terminacion[1]
             content = " "
             for clave in filetypes:
                 if(clave == terminacion):
@@ -191,7 +195,10 @@ def process_web_request(cs, webroot):
         datos_cabecera = datos_cabecera + "Connection: Keep-Alive\r\n"
 
         terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
-        terminacion = terminacion[1]
+        if(terminacion[0] == "/"):
+            terminacion = "html"
+        else:
+            terminacion = terminacion[1]
         content = " "
         for clave in filetypes:
             if(clave == terminacion):
