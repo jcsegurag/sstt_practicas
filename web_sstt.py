@@ -157,10 +157,10 @@ def process_web_request(cs, webroot):
           #las cabeceras Date, Server, Connection, Set-Cookie (para la cookie cookie_counter),
           #Content-Length y Content-Type.
         #TODO Cookie counter
-        cookie_counter = process_cookies()
+        """cookie_counter = process_cookies()
         if cookie_counter == MAX_ACCESOS:
             # error 403 forbidden
-            respuesta = "Set-Cookie: cookie_counter: " + cookie_counter + "\r\n"
+            respuesta = "Set-Cookie: cookie_counter: " + cookie_counter + "\r\n"""
         
 
 
