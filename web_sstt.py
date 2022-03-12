@@ -123,7 +123,7 @@ def process_web_request(cs, webroot):
             header = "HTTP/1.1 405 Method Not Allowed\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./405.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n\r\n" 
             tam5 = os.stat("./405.html").st_size
             enviar_recurso(ruta, header, tam5, cs)
-            #cerrar_conexion(cs)
+            cerrar_conexion(cs)
         # Leer URL y eliminar parámetros si los hubiera
         #TODO
         # Comprobar si el recurso solicitado es /, En ese caso el recurso es index.html
