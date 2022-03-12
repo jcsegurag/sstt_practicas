@@ -85,7 +85,20 @@ def process_cookies(headers,  cs):
         4. Si se encuentra y tiene el valor MAX_ACCESSOS se devuelve MAX_ACCESOS
         5. Si se encuentra y tiene un valor 1 <= x < MAX_ACCESOS se incrementa en 1 y se devuelve el valor
     """
-    pass
+    lineas = headers.split(sep = "\r\n", maxsplit = -1)
+    i=0
+    for linea in lineas:
+        cabeceras = linea[i].split(sep = ' ', maxsplit = -1)
+        i = i+1
+        if (cabeceras[0] == "Cookie: ") & cabeceras[1] != "1" & cabeceras[1] != str(MAX_ACCESOS):
+            return cabeceras[1] + 1
+        if (cabeceras[0] == "Cookie: ") & (cabeceras[1] == MAX_ACCESOS):
+            return MAX_ACCESOS
+        else:
+            return 1
+
+
+    
 
 
 def process_web_request(cs, webroot):
@@ -120,7 +133,16 @@ def process_web_request(cs, webroot):
         # Comprobar si es un método GET. Si no devolver un error Error 405 "Method Not Allowed".
         if(lineas_solicitud[0] != "GET"):
             ruta = "./405.html"
-            header = "HTTP/1.1 405 Method Not Allowed\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./405.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n\r\n" 
+            terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
+            if(terminacion[0] == "/"):
+                terminacion = "html"
+            else:
+                terminacion = terminacion[1]
+            content = " "
+            for clave in filetypes:
+                if(clave == terminacion):
+                    content = filetypes[clave]
+            header = "HTTP/1.1 405 Method Not Allowed\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./405.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: " + content + "\r\n\r\n" 
             tam5 = os.stat("./405.html").st_size
             enviar_recurso(ruta, header, tam5, cs)
             cerrar_conexion(cs)
@@ -140,25 +162,44 @@ def process_web_request(cs, webroot):
         # Comprobar que el recurso (fichero) existe, si no devolver Error 404 "Not found"
         if not (os.path.isfile(ruta)):
             ruta = "./404.html"
-            header = "HTTP/1.1 404 Method Not Allowed\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./404.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n\r\n" 
+            terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
+            if(terminacion[0] == "/"):
+                terminacion = "html"
+            else:
+                terminacion = terminacion[1]
+            content = " "
+            for clave in filetypes:
+                if(clave == terminacion):
+                    content = filetypes[clave]
+            header = "HTTP/1.1 404 Method Not Allowed\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./404.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: " + content +"\r\n\r\n" 
             tam4 = os.stat("./404.html").st_size
             enviar_recurso(ruta, header, tam4, cs)
         # Analizar las cabeceras. Imprimir cada cabecera y su valor. Si la cabecera es Cookie comprobar
           #el valor de cookie_counter para ver si ha llegado a MAX_ACCESOS.
           #Si se ha llegado a MAX_ACCESOS devolver un Error "403 Forbidden"
-        #TODO Cookies
-
-        
         # Obtener el tamaño del recurso en bytes.            
         # Extraer extensión para obtener el tipo de archivo. Necesario para la cabecera Content-Type       
         # Preparar respuesta con código 200. Construir una respuesta que incluya: la línea de respuesta y
           #las cabeceras Date, Server, Connection, Set-Cookie (para la cookie cookie_counter),
           #Content-Length y Content-Type.
         #TODO Cookie counter
-        """cookie_counter = process_cookies()
+        """cookie_counter = process_cookies(data, cs)
         if cookie_counter == MAX_ACCESOS:
-            # error 403 forbidden
-            respuesta = "Set-Cookie: cookie_counter: " + cookie_counter + "\r\n"""
+            ruta = "./403.html"
+            terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
+            if(terminacion[0] == "/"):
+                terminacion = "html"
+            else:
+                terminacion = terminacion[1]
+            content = " "
+            for clave in filetypes:
+                if(clave == terminacion):
+                    content = filetypes[clave]
+            header = "HTTP/1.1 403 Forbidden\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./405.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: " + content + "\r\n\r\n" 
+            tam5 = os.stat("./405.html").st_size
+            enviar_recurso(ruta, header, tam5, cs)
+        else :
+            respuesta = "Set-Cookie: cookie_counter: " + str(cookie_counter) + "\r\n" """
         
 
 
