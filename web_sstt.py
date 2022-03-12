@@ -1,6 +1,8 @@
 # coding=utf-8
 #!/usr/bin/env python3
 
+from ast import And
+from multiprocessing.sharedctypes import Value
 import socket
 import selectors    #https://docs.python.org/3/library/selectors.html
 import select
@@ -84,19 +86,20 @@ def process_cookies(headers,  cs):
         #3. Si no se encuentra cookie_counter , se devuelve 1
         #4. Si se encuentra y tiene el valor MAX_ACCESSOS se devuelve MAX_ACCESOS
         #5. Si se encuentra y tiene un valor 1 <= x < MAX_ACCESOS se incrementa en 1 y se devuelve el valor
-    
-    lineas = headers.split(sep = "\r\n", maxsplit = -1)
-    i=0
-    for linea in lineas:
-        cabeceras = linea[i].split(sep = ' ', maxsplit = -1)
-        i = i+1
-        if (cabeceras[0] == "Cookie: ") & cabeceras[1] != "cookie_counter = 1" & cabeceras[1] != "cookie_counter = " + str(MAX_ACCESOS):
-            return cabeceras[1] + 1
-        if (cabeceras[0] == "Cookie: ") & (cabeceras[1] == MAX_ACCESOS):
-            return MAX_ACCESOS
-        else:
-            return 1
-
+    for clave in diccionario.keys():
+        cookie = 1
+        if clave == "Cookie":
+            mach = r'(cookie_counter=[0-9].*)'
+            valor = diccionario[clave]
+            num = re.compile(mach).fullmatch(valor)
+            if num:
+                if diccionario[clave] == "cookie_counter=MAX_ACCESOS":
+                    return MAX_ACCESOS
+                else:
+                    division = diccionario[clave].split(sep = '=', maxsplit = -1)
+                    return division[1]
+    return cookie
+            
 
     
 
@@ -133,7 +136,6 @@ def process_web_request(cs, webroot):
             tam5 = os.stat("./405.html").st_size
             enviar_recurso(ruta, header, tam5, cs)
             print(header)
-            break
             #cerrar_conexion(cs)
 
         # Comprobar si la versión de HTTP es 1.1
@@ -170,9 +172,16 @@ def process_web_request(cs, webroot):
           #las cabeceras Date, Server, Connection, Set-Cookie (para la cookie cookie_counter),
           #Content-Length y Content-Type.
         #TODO Cookie counter
-        cookie_counter = process_cookies(data, cs)
+        #cooki = r'(?P<clave>[A-Z].): (?P<valor>.)'
+        cooki = r'(?P<clave>[A-Z].*): (?P<valor>.*)'
+        for linea in lineas:
+            co = re.compile(cooki).fullmatch(linea)
+            if co:
+                diccionario[co.group('clave')] = co.group('valor')
+
+        cookie_counter = int(process_cookies(diccionario, cs))
         respuesta = " "
-        if cookie_counter == MAX_ACCESOS:
+        if int(cookie_counter) == MAX_ACCESOS:
             ruta = "./403.html"
             terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
             if(terminacion[0] == "/"):
@@ -187,7 +196,9 @@ def process_web_request(cs, webroot):
             tam5 = os.stat("./405.html").st_size
             enviar_recurso(ruta, header, tam5, cs)
         else :
-            respuesta = "Set-Cookie: cookie_counter: " + str(cookie_counter) + "\r\n"
+            cookie_counter = cookie_counter + 1
+            respuesta = "Set-Cookie: cookie_counter=" + str(cookie_counter) + "\r\n"
+            
         
 
 
@@ -197,6 +208,7 @@ def process_web_request(cs, webroot):
         datos_cabecera = datos_cabecera + content_length
         datos_cabecera = datos_cabecera + "Keep-Alive: timeout=" + str(40) + ", max=" + str(40) + "\r\n"
         datos_cabecera = datos_cabecera + "Connection: Keep-Alive\r\n"
+        datos_cabecera = datos_cabecera + respuesta
 
         terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
         if(terminacion[0] == "/"):
