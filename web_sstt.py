@@ -50,6 +50,7 @@ def recibir_mensaje(cs):
 def cerrar_conexion(cs):
     """ Esta función cierra una conexión activa.
     """
+    print("conexion cerrada")
     cs.close()
 
 def enviar_recurso(ruta, header, tam ,cs):
@@ -59,7 +60,6 @@ def enviar_recurso(ruta, header, tam ,cs):
         fichero = open(ruta, "rb")
         datos = fichero.read()
         para_enviar = header.encode() + datos
-        #enviar_mensaje(cs, para_enviar)
         cs.send(para_enviar)
         print("Salir enviar recurso < bufsize")
 
@@ -74,7 +74,6 @@ def enviar_recurso(ruta, header, tam ,cs):
             if(not datos):
                 print("Ya no hay datos")
                 break
-            #enviar_mensaje(cs, datos)
             cs.send(datos)
             print("Salir enviar recurso > bufsize")
 
@@ -125,7 +124,7 @@ def process_web_request(cs, webroot):
             header = "HTTP/1.1 405 Method Not Allowed\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./405.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n\r\n" 
             tam5 = os.stat("./405.html").st_size
             enviar_recurso(ruta, header, tam5, cs)
-            cerrar_conexion(cs)
+            #cerrar_conexion(cs)
         # Leer URL y eliminar parámetros si los hubiera
         #TODO
         # Comprobar si el recurso solicitado es /, En ese caso el recurso es index.html
@@ -168,7 +167,7 @@ def process_web_request(cs, webroot):
         datos_cabecera = "HTTP/1.1 200 OK\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n"                 
         content_length = "Content-Length: " + str(os.stat(ruta).st_size) + "\r\n"
         datos_cabecera = datos_cabecera + content_length
-        datos_cabecera = datos_cabecera + "Keep-Alive: timeout=" + str(TIMEOUT_CONNECTION) + ", max=" + str(TIMEOUT_CONNECTION) + "\r\n"
+        datos_cabecera = datos_cabecera + "Keep-Alive: timeout=" + str(40) + ", max=" + str(40) + "\r\n"
         datos_cabecera = datos_cabecera + "Connection: Keep-Alive\r\n"
 
         terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
