@@ -208,6 +208,7 @@ def process_web_request(cs, webroot):
         datos_cabecera = datos_cabecera + content_length
         datos_cabecera = datos_cabecera + "Keep-Alive: timeout=" + str(40) + ", max=" + str(40) + "\r\n"
         datos_cabecera = datos_cabecera + "Connection: Keep-Alive\r\n"
+        datos_cabecera = datos_cabecera + respuesta 
 
         terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
         if(terminacion[0] == "/"):
@@ -218,8 +219,7 @@ def process_web_request(cs, webroot):
         for clave in filetypes:
             if(clave == terminacion):
                 content = filetypes[clave]
-        datos_cabecera = datos_cabecera + "Content-Type: " + content + "\r\n"
-        datos_cabecera = datos_cabecera + respuesta + "\r\n"
+        datos_cabecera = datos_cabecera + "Content-Type: " + content + "\r\n\r\n"
         print(datos_cabecera)
         # Leer y enviar el contenido del fichero a retornar en el cuerpo de la respuesta.
         # Se abre el fichero en modo lectura y modo binario
