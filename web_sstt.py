@@ -134,7 +134,7 @@ def process_web_request(cs, webroot):
         # Comprobar si es un método GET. Si no devolver un error Error 405 "Method Not Allowed".
         if(lineas_solicitud[0] != "GET"):
             ruta = "./405.html"
-            header = "HTTP/1.1 405 Method Not Allowed\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./405.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n" 
+            header = "HTTP/1.1 405 Method Not Allowed\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./405.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n\r\n" 
             tam5 = os.stat("./405.html").st_size
             enviar_recurso(ruta, header, tam5, cs)
             cerrar_conexion(cs)
@@ -154,9 +154,9 @@ def process_web_request(cs, webroot):
         # Comprobar que el recurso (fichero) existe, si no devolver Error 404 "Not found"
         if not (os.path.isfile(ruta)):
             ruta = "./404.html"
-            header = "HTTP/1.1 404 Method Not Allowed\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./404.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n" 
+            header = "HTTP/1.1 404 Method Not Allowed\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./404.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n\r\n" 
             tam4 = os.stat("./404.html").st_size
-            enviar_recurso("./404.html",header, tam4, cs)
+            enviar_recurso(ruta, header, tam4, cs)
         # Analizar las cabeceras. Imprimir cada cabecera y su valor. Si la cabecera es Cookie comprobar
           #el valor de cookie_counter para ver si ha llegado a MAX_ACCESOS.
           #Si se ha llegado a MAX_ACCESOS devolver un Error "403 Forbidden"
