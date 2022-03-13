@@ -86,8 +86,8 @@ def process_cookies(headers,  cs):
         #3. Si no se encuentra cookie_counter , se devuelve 1
         #4. Si se encuentra y tiene el valor MAX_ACCESSOS se devuelve MAX_ACCESOS
         #5. Si se encuentra y tiene un valor 1 <= x < MAX_ACCESOS se incrementa en 1 y se devuelve el valor
+    cookie = 0
     for clave in headers.keys():
-        cookie = 0
         if clave == "Cookie":
             mach = r'(cookie_counter=[0-9]*)'
             valor = headers[clave]
