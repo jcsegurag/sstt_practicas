@@ -140,7 +140,11 @@ def process_web_request(cs, webroot):
 
         # Comprobar si la versión de HTTP es 1.1
         if(lineas_solicitud[2] != "HTTP/1.1"):
-            print("La versidon HTTP no es la 1.1")
+            ruta = "./505.html"
+            header = "HTTP/1.1 505 Version Not Supported\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./505.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n\r\n" 
+            tam5 = os.stat("./505.html").st_size
+            enviar_recurso(ruta, header, tam5, cs)
+            print(header)
             break
 
         # Leer URL y eliminar parámetros si los hubiera
