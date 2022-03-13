@@ -35,7 +35,7 @@ logger = logging.getLogger()
 #Expresión regular para crear diccionario con atributos de la solicitud
 atributos = r'(?P<clave>[A-Z].): (?P<valor>.)'
 cooki = r'(?P<clave>[A-Z].*): (?P<valor>.*)'
-formato = r'(GET) (/.*) (HTTP/1.1)'
+formato = r'(GET) (/.*) (HTTP/1.*)'
 mach = r'(cookie_counter=[0-9]*)'
 
 def enviar_mensaje(cs, data):
@@ -148,7 +148,7 @@ def process_web_request(cs, webroot):
             enviar_recurso(ruta, header, tam4, cs)
             print(header)
             break
-        
+
         # Comprobar si la versión de HTTP es 1.1
         if(lineas_solicitud[2] != "HTTP/1.1"):
             ruta = "./505.html"
