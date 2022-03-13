@@ -87,9 +87,9 @@ def process_cookies(headers,  cs):
         #4. Si se encuentra y tiene el valor MAX_ACCESSOS se devuelve MAX_ACCESOS
         #5. Si se encuentra y tiene un valor 1 <= x < MAX_ACCESOS se incrementa en 1 y se devuelve el valor
     for clave in diccionario.keys():
-        cookie = 1
+        cookie = 0
         if clave == "Cookie":
-            mach = r'(cookie_counter=[0-9].*)'
+            mach = r'(cookie_counter=[0-9]*)'
             valor = diccionario[clave]
             num = re.compile(mach).fullmatch(valor)
             if num:
@@ -136,11 +136,12 @@ def process_web_request(cs, webroot):
             tam5 = os.stat("./405.html").st_size
             enviar_recurso(ruta, header, tam5, cs)
             print(header)
-            #cerrar_conexion(cs)
+            break
 
         # Comprobar si la versión de HTTP es 1.1
         if(lineas_solicitud[2] != "HTTP/1.1"):
             print("La versidon HTTP no es la 1.1")
+            break
 
         # Leer URL y eliminar parámetros si los hubiera
         #TODO
@@ -171,8 +172,6 @@ def process_web_request(cs, webroot):
         # Preparar respuesta con código 200. Construir una respuesta que incluya: la línea de respuesta y
           #las cabeceras Date, Server, Connection, Set-Cookie (para la cookie cookie_counter),
           #Content-Length y Content-Type.
-        #TODO Cookie counter
-        #cooki = r'(?P<clave>[A-Z].): (?P<valor>.)'
         cooki = r'(?P<clave>[A-Z].*): (?P<valor>.*)'
         for linea in lineas:
             co = re.compile(cooki).fullmatch(linea)
@@ -181,7 +180,7 @@ def process_web_request(cs, webroot):
 
         cookie_counter = int(process_cookies(diccionario, cs))
         respuesta = " "
-        if int(cookie_counter) == MAX_ACCESOS:
+        if cookie_counter == MAX_ACCESOS:
             ruta = "./403.html"
             terminacion = lineas_solicitud[1].split(sep = '.', maxsplit = -1)
             if(terminacion[0] == "/"):
@@ -195,13 +194,10 @@ def process_web_request(cs, webroot):
             header = "HTTP/1.1 403 Forbidden\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./403.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: " + content + "\r\n\r\n" 
             tam6 = os.stat("./403.html").st_size
             enviar_recurso(ruta, header, tam6, cs)
+            break
         else :
             cookie_counter = cookie_counter + 1
-            respuesta = "Set-Cookie: cookie_counter=" + str(cookie_counter) + "\r\n"
-            
-        
-
-
+            respuesta = "Set-Cookie: cookie_counter=" + str(cookie_counter) + "; Max-Age=120\r\n"
 
         datos_cabecera = "HTTP/1.1 200 OK\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n"                 
         content_length = "Content-Length: " + str(os.stat(ruta).st_size) + "\r\n"
@@ -272,7 +268,6 @@ def main():
         sock.bind((args.host, args.port))
         sock.listen()
         while(True):
-            #try:
             socket_cliente, addr_cliente = sock.accept()
             hijo = os.fork()
             if(hijo == 0):
@@ -280,8 +275,6 @@ def main():
                 process_web_request(socket_cliente, args.webroot)
             else:
                 cerrar_conexion(socket_cliente)
-            #except socket.error:
-                #break
     except KeyboardInterrupt:
         True
         
