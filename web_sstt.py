@@ -34,6 +34,8 @@ logger = logging.getLogger()
 
 #Expresión regular para crear diccionario con atributos de la solicitud
 atributos = r'(?P<clave>[A-Z].): (?P<valor>.)'
+cooki = r'(?P<clave>[A-Z].*): (?P<valor>.*)'
+formato = r'(GET) (/.*) (HTTP/1.1)'
 
 def enviar_mensaje(cs, data):
     """ Esta función envía datos (data) a través del socket cs
@@ -168,6 +170,16 @@ def process_web_request(cs, webroot):
             enviar_recurso(ruta, header, tam4, cs)
             print(header)
             break
+            
+        form = re.compile(formato).fullmatch(lineas[0])
+        if  not form:
+            ruta = "./400.html"
+            header = "HTTP/1.1 400 Bad Request\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./400.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n\r\n" 
+            tam4 = os.stat("./400.html").st_size
+            enviar_recurso(ruta, header, tam4, cs)
+            print(header)
+            break
+
         # Analizar las cabeceras. Imprimir cada cabecera y su valor. Si la cabecera es Cookie comprobar
           #el valor de cookie_counter para ver si ha llegado a MAX_ACCESOS.
           #Si se ha llegado a MAX_ACCESOS devolver un Error "403 Forbidden"
@@ -176,7 +188,7 @@ def process_web_request(cs, webroot):
         # Preparar respuesta con código 200. Construir una respuesta que incluya: la línea de respuesta y
           #las cabeceras Date, Server, Connection, Set-Cookie (para la cookie cookie_counter),
           #Content-Length y Content-Type.
-        cooki = r'(?P<clave>[A-Z].*): (?P<valor>.*)'
+
         for linea in lineas:
             co = re.compile(cooki).fullmatch(linea)
             if co:
