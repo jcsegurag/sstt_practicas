@@ -140,6 +140,15 @@ def process_web_request(cs, webroot):
             print(header)
             break
 
+        form = re.compile(formato).fullmatch(lineas[0])
+        if  not form:
+            ruta = "./400.html"
+            header = "HTTP/1.1 400 Bad Request\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./400.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n\r\n" 
+            tam4 = os.stat("./400.html").st_size
+            enviar_recurso(ruta, header, tam4, cs)
+            print(header)
+            break
+        
         # Comprobar si la versión de HTTP es 1.1
         if(lineas_solicitud[2] != "HTTP/1.1"):
             ruta = "./505.html"
@@ -171,14 +180,6 @@ def process_web_request(cs, webroot):
             print(header)
             break
             
-        form = re.compile(formato).fullmatch(lineas[0])
-        if  not form:
-            ruta = "./400.html"
-            header = "HTTP/1.1 400 Bad Request\r\n" + "Date: " + str(datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT\r\n')) + "Server: iotforyou03.org\r\n" + "Content-Length: " + str(os.stat("./400.html").st_size) + "\r\n" + "Connection: Connection Close\r\n" + "Content-Type: text/html\r\n\r\n" 
-            tam4 = os.stat("./400.html").st_size
-            enviar_recurso(ruta, header, tam4, cs)
-            print(header)
-            break
 
         # Analizar las cabeceras. Imprimir cada cabecera y su valor. Si la cabecera es Cookie comprobar
           #el valor de cookie_counter para ver si ha llegado a MAX_ACCESOS.
