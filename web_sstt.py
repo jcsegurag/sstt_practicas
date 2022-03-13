@@ -36,6 +36,7 @@ logger = logging.getLogger()
 atributos = r'(?P<clave>[A-Z].): (?P<valor>.)'
 cooki = r'(?P<clave>[A-Z].*): (?P<valor>.*)'
 formato = r'(GET) (/.*) (HTTP/1.1)'
+mach = r'(cookie_counter=[0-9]*)'
 
 def enviar_mensaje(cs, data):
     """ Esta función envía datos (data) a través del socket cs
@@ -91,7 +92,6 @@ def process_cookies(headers,  cs):
     cookie = 0
     for clave in headers.keys():
         if clave == "Cookie":
-            mach = r'(cookie_counter=[0-9]*)'
             valor = headers[clave]
             num = re.compile(mach).fullmatch(valor)
             if num:
