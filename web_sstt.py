@@ -18,7 +18,7 @@ import logging      # Para imprimir logs
 
 
 BUFSIZE = 8192 # Tamaño máximo del buffer que se puede utilizar
-TIMEOUT_CONNECTION = 30 # Timout para la conexión persistente
+TIMEOUT_CONNECTION = 20 # Timout para la conexión persistente
 MAX_ACCESOS = 10
 diccionario={}
 
@@ -86,17 +86,17 @@ def process_cookies(headers,  cs):
         #3. Si no se encuentra cookie_counter , se devuelve 1
         #4. Si se encuentra y tiene el valor MAX_ACCESSOS se devuelve MAX_ACCESOS
         #5. Si se encuentra y tiene un valor 1 <= x < MAX_ACCESOS se incrementa en 1 y se devuelve el valor
-    for clave in diccionario.keys():
+    for clave in headers.keys():
         cookie = 0
         if clave == "Cookie":
             mach = r'(cookie_counter=[0-9]*)'
-            valor = diccionario[clave]
+            valor = headers[clave]
             num = re.compile(mach).fullmatch(valor)
             if num:
-                if diccionario[clave] == "cookie_counter=MAX_ACCESOS":
+                if headers[clave] == "cookie_counter=MAX_ACCESOS":
                     return MAX_ACCESOS
                 else:
-                    division = diccionario[clave].split(sep = '=', maxsplit = -1)
+                    division = headers[clave].split(sep = '=', maxsplit = -1)
                     return division[1]
     return cookie
             
