@@ -294,8 +294,6 @@ def main():
                 cerrar_conexion(socket_cliente)
     except KeyboardInterrupt:
         True
-
-        #~el mario
         
 if __name__== "__main__":
     main()
