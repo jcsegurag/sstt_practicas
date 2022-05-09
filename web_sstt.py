@@ -175,6 +175,7 @@ def process_web_request(cs, webroot):
         res = re.compile(formato).fullmatch(lineas[0])
         text = res.group(2)
         recurso = text
+        recurso = text.split(sep='?', maxsplit=1)[0]
 
         # Construir la ruta absoluta del recurso (webroot + recurso solicitado)
         ruta = webroot + recurso
