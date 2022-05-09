@@ -166,17 +166,18 @@ def process_web_request(cs, webroot):
         recurso = text.split(sep='?', maxsplit=1)[0]"""
         # Comprobar si el recurso solicitado es /, En ese caso el recurso es index.html
         recurso = " "
-        if(lineas_solicitud[1] == "/"):
-            recurso = "/index.html"
-        else:
-            recurso = lineas_solicitud[1]
-
+       
         text = ""
         res = re.compile(formato).fullmatch(lineas[0])
         text = res.group(2)
         print(text)
         recurso = text
         recurso = text.split(sep='?', maxsplit=1)[0]
+
+        if(recurso == "/"):
+            recurso = "/index.html"
+        
+
 
         # Construir la ruta absoluta del recurso (webroot + recurso solicitado)
         ruta = webroot + recurso
