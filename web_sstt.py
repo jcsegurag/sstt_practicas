@@ -160,11 +160,11 @@ def process_web_request(cs, webroot):
             break
 
         # Leer URL y eliminar parámetros si los hubiera
-        text = ""
+        """text = ""
         res = re.compile(formato).fullmatch(lineas[1])
         text = res.group(2)
         recurso = text
-        recurso = text.split(sep='?', maxsplit=1)[0]
+        recurso = text.split(sep='?', maxsplit=1)[0]"""
         # Comprobar si el recurso solicitado es /, En ese caso el recurso es index.html
         recurso = " "
         if(lineas_solicitud[1] == "/"):
