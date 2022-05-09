@@ -21,6 +21,7 @@ BUFSIZE = 8192 # Tamaño máximo del buffer que se puede utilizar
 TIMEOUT_CONNECTION = 20 # Timout para la conexión persistente
 MAX_ACCESOS = 10
 diccionario={}
+dicc={}
 
 # Extensiones admitidas (extension, name in HTTP)
 filetypes = {"gif":"image/gif", "jpg":"image/jpg", "jpeg":"image/jpeg", "png":"image/png", "htm":"text/htm", 
@@ -33,7 +34,6 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger()
 
 #Expresión regular para crear diccionario con atributos de la solicitud
-atributos = r'(?P<clave>[A-Z].): (?P<valor>.)'
 cooki = r'(?P<clave>[A-Z].*): (?P<valor>.*)'
 formato = r'(GET) (/.*) (HTTP/1.*)'
 mach = r'(cookie_counter=[0-9]*)'
@@ -125,11 +125,12 @@ def process_web_request(cs, webroot):
         lineas = data.split(sep = "\r\n", maxsplit = -1)
         lineas_solicitud = lineas[0].split(sep = ' ', maxsplit = -1)
         
-        """# Devuelve una lista con los atributos de las cabeceras.
-        for linea in lineas:
-            comp = re.compile(atributos).fullmatch(str(lineas))
+        #FALTA
+        # Devuelve una lista con los atributos de las cabeceras.
+        """for linea in lineas:
+            comp = re.compile(atributos).fullmatch(linea)
             if comp:
-                diccionario = {comp.group('clave'): comp.group('valor')}"""
+                dicc = {comp.group('clave'): comp.group('valor')}"""
 
         # Comprobar si es un método GET. Si no devolver un error Error 405 "Method Not Allowed".
         if(lineas_solicitud[0] != "GET"):
@@ -159,7 +160,11 @@ def process_web_request(cs, webroot):
             break
 
         # Leer URL y eliminar parámetros si los hubiera
-        #TODO
+        text = ""
+        res = re.compile(formato).fullmatch(lineas[1])
+        text = res.group(2)
+        recurso = text
+        recurso = text.split(sep='?', maxsplit=1)[0]
         # Comprobar si el recurso solicitado es /, En ese caso el recurso es index.html
         recurso = " "
         if(lineas_solicitud[1] == "/"):
