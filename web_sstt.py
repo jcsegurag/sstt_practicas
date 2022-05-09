@@ -33,7 +33,6 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger()
 
 #Expresión regular para crear diccionario con atributos de la solicitud
-atributos = r'(?P<clave>[A-Z].): (?P<valor>.)'
 cooki = r'(?P<clave>[A-Z].*): (?P<valor>.*)'
 formato = r'(GET) (/.*) (HTTP/1.*)'
 mach = r'(cookie_counter=[0-9]*)'
@@ -160,6 +159,11 @@ def process_web_request(cs, webroot):
 
         # Leer URL y eliminar parámetros si los hubiera
         #TODO
+        text = ""
+        res = re.compile(formato).fullmatch(lineas[1])
+        text = res.group(2)
+        recurso = text
+        recurso = text.split(sep='?', maxsplit=1)[0]
         # Comprobar si el recurso solicitado es /, En ese caso el recurso es index.html
         recurso = " "
         if(lineas_solicitud[1] == "/"):
