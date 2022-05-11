@@ -123,12 +123,6 @@ def process_web_request(cs, webroot):
         # Analizar que la línea de solicitud y comprobar está bien formateada según HTTP 1.1
         lineas = data.split(sep = "\r\n", maxsplit = -1)
         lineas_solicitud = lineas[0].split(sep = ' ', maxsplit = -1)
-        
-        """# Devuelve una lista con los atributos de las cabeceras.
-        for linea in lineas:
-            comp = re.compile(atributos).fullmatch(str(lineas))
-            if comp:
-                diccionario = {comp.group('clave'): comp.group('valor')}"""
 
         # Comprobar si es un método GET. Si no devolver un error Error 405 "Method Not Allowed".
         if(lineas_solicitud[0] != "GET"):
@@ -158,15 +152,7 @@ def process_web_request(cs, webroot):
             break
 
         # Leer URL y eliminar parámetros si los hubiera
-        #TODO
-        """text = ""
-        res = re.compile(formato).fullmatch(lineas[1])
-        text = res.group(2)
-        recurso = text
-        recurso = text.split(sep='?', maxsplit=1)[0]"""
-        # Comprobar si el recurso solicitado es /, En ese caso el recurso es index.html
         recurso = " "
-       
         text = ""
         res = re.compile(formato).fullmatch(lineas[0])
         text = res.group(2)
@@ -174,10 +160,9 @@ def process_web_request(cs, webroot):
         recurso = text
         recurso = text.split(sep='?', maxsplit=1)[0]
 
+        # Comprobar si el recurso solicitado es /, En ese caso el recurso es index.html
         if(recurso == "/"):
-            recurso = "/index.html"
-        
-
+            recurso = "/index.html"        
 
         # Construir la ruta absoluta del recurso (webroot + recurso solicitado)
         ruta = webroot + recurso
